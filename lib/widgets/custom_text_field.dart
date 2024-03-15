@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/constants.dart';
 
 class CustomTextField extends StatelessWidget {
   final String labelText;
@@ -8,6 +9,7 @@ class CustomTextField extends StatelessWidget {
   final TextInputType keyboardType;
   final VoidCallback? onTap;
   final bool readOnly;
+  final void Function(String?)? onSaved;
 
   CustomTextField({
     required this.labelText,
@@ -17,6 +19,7 @@ class CustomTextField extends StatelessWidget {
     this.keyboardType = TextInputType.text,
     this.onTap,
     this.readOnly = false,
+    this.onSaved,
   });
 
   @override
@@ -28,7 +31,7 @@ class CustomTextField extends StatelessWidget {
         child: TextFormField(
           decoration: InputDecoration(
             labelText: labelText,
-            prefixIcon: Icon(prefixIcon, color: Color(0xFF007CFF)),
+            prefixIcon: Icon(prefixIcon, color: Constants.primaryColor),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
@@ -43,6 +46,7 @@ class CustomTextField extends StatelessWidget {
             }
             return null;
           },
+          onSaved: onSaved,
         ),
       ),
     );

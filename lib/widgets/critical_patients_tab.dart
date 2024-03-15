@@ -1,10 +1,10 @@
-// critical_patients_tab.dart
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/widgets/patient_card.dart';
 import 'package:mapd722_mobile_web_development/models/patient.dart';
+import 'package:mapd722_mobile_web_development/constants/constants.dart';
 
 class CriticalPatientsTab extends StatefulWidget {
   @override
@@ -22,7 +22,7 @@ class _CriticalPatientsTabState extends State<CriticalPatientsTab> {
 
   Future<List<Patient>> fetchCriticalPatients() async {
     final response = await http
-        .get(Uri.parse('http://medicare-rest-api.onrender.com/criticalPatients'));
+        .get(Uri.parse('${Constants.baseUrl}criticalPatients'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);

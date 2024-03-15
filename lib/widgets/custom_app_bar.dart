@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../constants/constants.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
@@ -17,7 +18,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      backgroundColor: const Color(0xFF007CFF),
+      backgroundColor: Constants.primaryColor,
       title: Text(
         title,
         style: const TextStyle(
@@ -32,7 +33,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             icon: Icon(Icons.menu_rounded),
             onPressed: () {
-              onMenu!();
+              if (onMenu != null) {
+                onMenu!();
+              } else {
+                Scaffold.of(context).openDrawer();
+              }
             },
           ),
       ],

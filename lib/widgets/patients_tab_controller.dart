@@ -1,7 +1,7 @@
-// patients_tab_controller.dart
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/widgets/critical_patients_tab.dart';
 import 'package:mapd722_mobile_web_development/widgets/patients_tab.dart';
+import 'package:mapd722_mobile_web_development/constants/constants.dart';
 
 class PatientsTabController extends StatelessWidget {
   final TabController tabController;
@@ -11,7 +11,7 @@ class PatientsTabController extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xFF007CFF),
+      color: Constants.primaryColor,
       child: Column(
         children: [
           Padding(
@@ -27,7 +27,7 @@ class PatientsTabController extends StatelessWidget {
                   controller: tabController,
                   labelColor: Colors.white,
                   indicator: BoxDecoration(
-                    color: const Color(0xFF007CFF),
+                    color: Constants.primaryColor,
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,

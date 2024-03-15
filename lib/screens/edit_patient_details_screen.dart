@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/models/patient.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
+import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
+import '../constants/constants.dart';
 
 class EditPatientDetailsScreen extends StatefulWidget {
   @override
@@ -38,16 +40,20 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
     return Scaffold(
+      key: _scaffoldKey,
       appBar: CustomAppBar(
         title: 'Edit Patient Details',
         onBack: () {
           Navigator.pop(context);
         },
         onMenu: () {
-          print('Custom menu button pressed!');
+          _scaffoldKey.currentState!.openDrawer();
         },
       ),
+      drawer: CustomDrawer(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -117,7 +123,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                               padding: const EdgeInsets.only(right: 8.0),
                               child: Icon(
                                 Icons.person,
-                                color: Color(0xFF007CFF),
+                                color: Constants.primaryColor,
                               ),
                             ),
                             Text('Gender:',
@@ -132,7 +138,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                                   'Male'; // Update the gender property
                                 });
                               },
-                              activeColor: Color(0xFF007CFF),
+                              activeColor: Constants.primaryColor,
                             ),
                             Text('Male'),
                             Radio(
@@ -145,7 +151,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                                   'Female'; // Update the gender property
                                 });
                               },
-                              activeColor: Color(0xFF007CFF),
+                              activeColor: Constants.primaryColor,
                             ),
                             Text('Female'),
                           ],
@@ -171,7 +177,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                   ),
                   style: ButtonStyle(
                     backgroundColor:
-                    MaterialStateProperty.all<Color>(Color(0xFF007CFF)),
+                    MaterialStateProperty.all<Color>(Constants.primaryColor),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),

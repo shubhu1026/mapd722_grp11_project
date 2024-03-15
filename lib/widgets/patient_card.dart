@@ -1,7 +1,7 @@
-// patient_card.dart
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/models/patient.dart';
 import 'package:mapd722_mobile_web_development/screens/patient_details_screen.dart';
+import '../constants/constants.dart';
 
 class PatientCard extends StatelessWidget {
   final Patient patient;
@@ -15,7 +15,7 @@ class PatientCard extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => PatientDetailsScreen(),
+            builder: (context) => PatientDetailsScreen(patientId: patient.id),
           ),
         );
       },
@@ -30,7 +30,7 @@ class PatientCard extends StatelessWidget {
             icon: const Icon(Icons.arrow_drop_down_circle_outlined),
             onPressed: () {
               // Add your back button functionality here
-      
+
             },
           ),
         ),

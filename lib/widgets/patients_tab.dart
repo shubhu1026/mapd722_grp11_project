@@ -1,10 +1,10 @@
-// critical_patients_tab.dart
 import 'dart:async';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/widgets/patient_card.dart';
 import 'package:mapd722_mobile_web_development/models/patient.dart';
+import 'package:mapd722_mobile_web_development/constants/constants.dart';
 
 class PatientsTab extends StatefulWidget {
   @override
@@ -22,13 +22,13 @@ class _PatientsTabState extends State<PatientsTab> {
 
   Future<List<Patient>> fetchPatients() async {
     final response = await http
-        .get(Uri.parse('http://medicare-rest-api.onrender.com/patients'));
+        .get(Uri.parse('${Constants.baseUrl}patients'));
 
     if (response.statusCode == 200) {
       final List<dynamic> data = json.decode(response.body);
       return data.map((json) => Patient.fromJson(json)).toList();
     } else {
-      throw Exception('Failed to load critical patients');
+      throw Exception('Failed to load patients');
     }
   }
 
@@ -39,7 +39,7 @@ class _PatientsTabState extends State<PatientsTab> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(
-            child: CircularProgressIndicator(color: Colors.white,),
+            child: CircularProgressIndicator(color: Constants.primaryColor,),
           );
         } else if (snapshot.hasError) {
           return Center(

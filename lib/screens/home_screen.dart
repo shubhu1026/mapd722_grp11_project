@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/screens/patients_screen.dart';
+import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
+import '../constants/constants.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
@@ -8,23 +10,16 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: const Color(0xFF007CFF),
+        backgroundColor: Constants.primaryColor,
         title: const Text(
           'MediCare',
           style: TextStyle(
               color: Colors.white, fontWeight: FontWeight.w500, fontSize: 24),
         ),
         centerTitle: true,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.menu_rounded),
-            onPressed: () {
-              // Add your menu button functionality here
-            },
-          ),
-        ],
         iconTheme: const IconThemeData(color: Colors.white),
       ),
+      drawer: CustomDrawer(),
       body: Column(
         mainAxisSize: MainAxisSize.max,
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -43,8 +38,8 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       bottomSheet: Container(
-        decoration: const BoxDecoration(
-          color: Color(0xFF007CFF),
+        decoration: BoxDecoration(
+          color: Constants.primaryColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         child: Padding(
@@ -84,13 +79,13 @@ class HomeScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => PatientsScreen()),
                   );
                 },
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
                       'Get Started',
                       style: TextStyle(
-                        color: Color(0xFF007CFF),
+                        color: Constants.primaryColor,
                         fontSize: 18,
                       ),
                     ),
@@ -99,7 +94,7 @@ class HomeScreen extends StatelessWidget {
                     ),
                     Icon(
                       Icons.arrow_forward,
-                      color: Color(0xFF007CFF),
+                      color: Constants.primaryColor,
                     ),
                   ],
                 ),
