@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapd722_mobile_web_development/models/patient.dart';
+import 'package:mapd722_mobile_web_development/screens/patient_details_screen.dart';
+import 'package:mapd722_mobile_web_development/screens/patients_screen.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
@@ -307,7 +309,10 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
             ),
           );
           Navigator.pop(context); // Close the current screen
-          Navigator.pushReplacementNamed(context, '/patients'); // Go to patients screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => PatientDetailsScreen(patientId: _patient.id)),
+          );
         }
   } catch (error) {
     print('Error: $error');

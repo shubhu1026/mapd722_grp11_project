@@ -32,6 +32,12 @@ class _PatientsTabState extends State<PatientsTab> {
     }
   }
 
+  void updatePatientList() {
+    setState(() {
+      _patients = fetchPatients();
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Patient>>(

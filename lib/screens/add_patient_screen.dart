@@ -9,6 +9,7 @@ import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
 import '../constants/constants.dart';
+import '../widgets/patients_tab.dart';
 
 class AddPatientScreen extends StatefulWidget {
   @override
@@ -239,7 +240,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
             'lastName': _lastNameController.text,
             'address': _addressController.text,
             'dateOfBirth': _dobController.text,
-            'gender': 'Male', // Or 'Female', based on your logic
+            'gender': _selectedGender == Gender.male ? 'Male' : 'Female',
             'email': _emailController.text,
             'contactNumber': _phoneController.text,
             'doctor': _doctorController.text,
@@ -281,7 +282,10 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
           );
           // Navigate to patients screen
           Navigator.pop(context); // Close the current screen
-          Navigator.pushReplacementNamed(context, '/patients'); // Go to patients screen
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => PatientsScreen()),
+          ); // Go to patients screen
         } else {
           // Handle the response as usual
           print('Response status code: ${response.statusCode}');

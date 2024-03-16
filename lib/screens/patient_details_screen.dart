@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mapd722_mobile_web_development/screens/patients_screen.dart';
 import 'package:mapd722_mobile_web_development/screens/test_records_screen.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/screens/edit_patient_details_screen.dart';
@@ -68,7 +69,10 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context); // Close dialog
-                    Navigator.pop(context); // Navigate back to previous screen
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => PatientsScreen()),
+                    );
                   },
                   child: Text('OK'),
                 ),
