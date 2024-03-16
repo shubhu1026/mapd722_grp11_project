@@ -35,6 +35,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
       if (response.statusCode == 200) {
         setState(() {
           _patientDetails = json.decode(response.body);
+          print('hello : $_patientDetails');
         });
       } else {
         throw Exception('Failed to fetch patient details');
@@ -43,7 +44,45 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
       print('Error: $error');
     }
   }
-
+  Future<void> _deletePatient() async {
+    try {
+      final response = await http.delete(
+        Uri.parse('${Constants.baseUrl}patients/${widget.patientId}'),
+      );
+      if (response.statusCode == 307) {
+          final newUrl = response.headers['location'];
+          final redirectedResponse = await http.delete(
+            Uri.parse(newUrl!),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+          );
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Delete Successful'),
+              content: Text('Patient deleted successfully.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context); // Close dialog
+                    Navigator.pop(context); // Navigate back to previous screen
+                  },
+                  child: Text('OK'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        throw Exception('Failed to delete patient');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,13 +122,9 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                 iconSize: 24,
                                 icon: Icon(Icons.edit, color: Colors.white),
                                 onPressed: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          EditPatientDetailsScreen(),
-                                    ),
-                                  );
+                                  print('Patient Details: $_patientDetails');
+                                   Navigator.push(context,MaterialPageRoute(
+                                    builder: (context) => EditPatientDetailsScreen(patientDetails: _patientDetails)),);
                                 },
                               ),
                             ],
@@ -211,6 +246,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                 icon:
                                 Icon(Icons.delete_forever, color: Colors.white),
                                 onPressed: () {
+                                   _deletePatient();
                                   // Add functionality for delete button
                                 },
                               ),
@@ -226,4 +262,5 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
           ),
     );
   }
+  
 }

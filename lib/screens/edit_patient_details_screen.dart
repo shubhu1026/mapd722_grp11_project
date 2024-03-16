@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:mapd722_mobile_web_development/models/patient.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
@@ -6,6 +9,10 @@ import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
 import '../constants/constants.dart';
 
 class EditPatientDetailsScreen extends StatefulWidget {
+  final Map<String, dynamic>? patientDetails;
+
+  const EditPatientDetailsScreen({Key? key, this.patientDetails}) : super(key: key);
+
   @override
   _EditPatientDetailsScreenState createState() => _EditPatientDetailsScreenState();
 }
@@ -21,7 +28,6 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
     address: '',
     email: '',
     gender: '',
-    // Update gender property
     dateOfBirth: '',
     contactNumber: '',
     recordHistory: [],
@@ -37,6 +43,34 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
   TextEditingController _doctorController = TextEditingController();
   TextEditingController _emailController = TextEditingController();
   TextEditingController _phoneController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Check if patient details exist and set the text controllers
+    if (widget.patientDetails != null) {
+      _firstNameController.text = widget.patientDetails!['firstName'] ?? '';
+      _lastNameController.text = widget.patientDetails!['lastName'] ?? '';
+      _addressController.text = widget.patientDetails!['address'] ?? '';
+      _dobController.text = widget.patientDetails!['dateOfBirth'] ?? '';
+      _doctorController.text = widget.patientDetails!['doctor'] ?? '';
+      _emailController.text = widget.patientDetails!['email'] ?? '';
+      _phoneController.text = widget.patientDetails!['contactNumber'] ?? '';
+
+      // Set the gender based on existing data
+      if (widget.patientDetails!['gender'] == 'Male') {
+        setState(() {
+          _selectedGender = Gender.male;
+        });
+      } else if (widget.patientDetails!['gender'] == 'Female') {
+        setState(() {
+          _selectedGender = Gender.female;
+        });
+      }
+      // Set the patient ID if available
+      _patient.id = widget.patientDetails!['_id'] ?? '';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -208,20 +242,75 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
   }
 
   void _submitForm() {
-    if (_formKey.currentState!.validate()) {
-      _formKey.currentState!.save();
-
-      // TODO: Process the patient data, e.g., save to database or perform other actions
-      // For now, print the patient details
-      print('Patient Details:');
-      print('First Name: ${_patient.firstName}');
-      print('Last Name: ${_patient.lastName}');
-      print('Address: ${_patient.address}');
-      print('DOB: ${_patient.dateOfBirth}');
-      print('Doctor Name: ${_patient.doctor}');
-      // ... Other patient details
-
-      // TODO: Add logic to save the patient to your data source
-    }
+  if (_formKey.currentState!.validate()) {
+    _formKey.currentState!.save();
+    _updatePatientDetails();
+  }
+  }
+  Future<void> _updatePatientDetails() async {
+  try {
+        print('Updating patient details:');
+    print('First Name: ${_patient.id}');
+    print('Last Name: ${_lastNameController.text}');
+    print('Address: ${_addressController.text}');
+    print('Date of Birth: ${_dobController.text}');
+    print('Doctor: ${_doctorController.text}');
+    print('Email: ${_emailController.text}');
+    print('Gender: ${_selectedGender.toString().split('.').last}');
+    print('Contact Number: ${_phoneController.text}');
+    final response = await http.put(
+      
+      Uri.parse('${Constants.baseUrl}patients/${_patient.id}'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'firstName': _firstNameController.text,
+        'lastName': _lastNameController.text,
+        'address': _addressController.text,
+        'dateOfBirth': _dobController.text,
+        'doctor': _doctorController.text,
+        'email': _emailController.text,
+        'gender': _selectedGender.toString().split('.').last, // Convert enum to string
+        'contactNumber': _phoneController.text,
+      }),
+    );
+        if (response.statusCode == 307) {
+          // Extract the new URL from the Location header
+          final newUrl = response.headers['location'];
+             print('Redirected response body:  ${newUrl}',);
+          // Make another POST request to the new URL
+          final redirectedResponse = await http.put(
+            Uri.parse(newUrl!),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: jsonEncode(<String, dynamic>{
+              'firstName': _firstNameController.text,
+              'lastName': _lastNameController.text,
+              'address': _addressController.text,
+              'dateOfBirth': _dobController.text,
+              'doctor': _doctorController.text,
+              'email': _emailController.text,
+              'gender': _selectedGender.toString().split('.').last, // Convert enum to string
+              'contactNumber': _phoneController.text,
+            }),
+          );
+          // Handle the redirected response
+          print('Redirected response status code: ${redirectedResponse.statusCode}');
+          print('Redirected response body: ${redirectedResponse.body}');
+          // Show success message to the user
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Patient Updated successfully'),
+            ),
+          );
+          Navigator.pop(context); // Close the current screen
+          Navigator.pushReplacementNamed(context, '/patients'); // Go to patients screen
+        }
+  } catch (error) {
+    print('Error: $error');
   }
 }
+  }
