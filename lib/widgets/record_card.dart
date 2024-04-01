@@ -6,8 +6,12 @@ import 'package:mapd722_mobile_web_development/constants/constants.dart';
 
 class RecordCard extends StatefulWidget {
   final Record record;
+  final String? patientId; // Patient ID
 
-  const RecordCard({required this.record});
+  const RecordCard({
+    required this.record,
+    required this.patientId, // Receive patient ID
+  });
 
   @override
   _RecordCardState createState() => _RecordCardState();
@@ -57,7 +61,7 @@ class _RecordCardState extends State<RecordCard> {
                   IconButton(
                     icon: Icon(Icons.edit, color: Colors.black),
                     onPressed: () {
-                      Navigator.push(context,MaterialPageRoute(builder: (context) =>  EditPatientRecordScreen()),);
+                      Navigator.push(context,MaterialPageRoute(builder: (context) =>  EditPatientRecordScreen(record: widget.record, patientId: widget.patientId,)),);
 
                     },
                   ),

@@ -56,7 +56,7 @@ class _RecordsTabState extends State<RecordsTab> {
           return ListView.builder(
             itemCount: snapshot.data!.length,
             itemBuilder: (context, index) {
-              return RecordCard(record: snapshot.data![index]);
+              return RecordCard(record: snapshot.data![index], patientId: widget.patientID,);
             },
           );
         }
