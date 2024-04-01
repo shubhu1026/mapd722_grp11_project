@@ -61,7 +61,7 @@ class _RecordCardState extends State<RecordCard> {
 
     // Check if the condition is critical, then change the cardColor to primary color
     if (widget.record.condition.toLowerCase() == "critical") {
-      cardColor = Constants.primaryColor; // Use primary color from constants
+      cardColor = Colors.red; // Use primary color from constants
     }
 
     return GestureDetector(
@@ -103,7 +103,7 @@ class _RecordCardState extends State<RecordCard> {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete_forever, color: Colors.red),
+                        icon: Icon(Icons.delete_forever, color: Colors.black),
                         onPressed: () {
                           showDialog(
                               context: context,

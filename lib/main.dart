@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/screens/home_screen.dart';
+import 'package:flutter_driver/driver_extension.dart';
 
 void main() {
+  enableFlutterDriverExtension();
+
+  
   runApp(const MyApp());
 }
 
