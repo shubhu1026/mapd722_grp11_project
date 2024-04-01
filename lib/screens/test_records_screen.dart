@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/screens/add_test_record.dart';
 import 'package:mapd722_mobile_web_development/widgets/patient_records.dart';
-
 class TestRecordsScreen extends StatefulWidget {
   final String? patientID;
 
@@ -12,6 +11,10 @@ class TestRecordsScreen extends StatefulWidget {
 }
 
 class _TestRecordsScreenState extends State<TestRecordsScreen> {
+  void refreshRecords() {
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,7 +27,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            color: Color(0xFF007CFF), // Set the background color to blue
+            color: Color(0xFF007CFF),
             child: Padding(
               padding: const EdgeInsets.all(16.0),
               child: Column(
@@ -72,7 +75,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
           Expanded(
             child: Container(
               color: Color.fromARGB(255, 255, 255, 255),
-              child: RecordsTab(patientID: widget.patientID,),
+              child: RecordsTab(patientID: widget.patientID, refreshCallback: refreshRecords,),
             ),
           ),
         ],
@@ -82,7 +85,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
           // Navigate to add test record screen
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddPatientRecordScreen(patientID: widget.patientID)),
+            MaterialPageRoute(builder: (context) => AddPatientRecordScreen(patientID: widget.patientID, refreshCallback: refreshRecords,)),
           ).then((testRecord) {
             // After adding test record, update the list
             if (testRecord != null) {

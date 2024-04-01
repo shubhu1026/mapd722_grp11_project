@@ -7,11 +7,14 @@ import 'package:mapd722_mobile_web_development/constants/constants.dart';
 
 class RecordCard extends StatefulWidget {
   final Record record;
-  final String? patientId; // Patient ID
+  final String? patientId;
+
+  final Function refreshCallback;
 
   const RecordCard({
     required this.record,
-    required this.patientId, // Receive patient ID
+    required this.patientId,
+    required this.refreshCallback,
   });
 
   @override
@@ -30,8 +33,8 @@ class _RecordCardState extends State<RecordCard> {
         },
       );
       if (response.statusCode == 200) {
-        // Handle success
-        // For example, show a SnackBar indicating successful deletion
+        widget.refreshCallback();
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Test record deleted successfully'),
@@ -45,8 +48,6 @@ class _RecordCardState extends State<RecordCard> {
       }
     } catch (error) {
       print('Error deleting test record: $error');
-      // Handle error
-      // For example, show an error message to the user
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('Failed to delete test record'),
@@ -98,7 +99,7 @@ class _RecordCardState extends State<RecordCard> {
                       IconButton(
                         icon: Icon(Icons.edit, color: Colors.black),
                         onPressed: () {
-                          Navigator.push(context,MaterialPageRoute(builder: (context) =>  EditPatientRecordScreen(record: widget.record, patientId: widget.patientId,)),);
+                          Navigator.push(context,MaterialPageRoute(builder: (context) =>  EditPatientRecordScreen(record: widget.record, patientId: widget.patientId, refreshCallback: widget.refreshCallback,)),);
 
                         },
                       ),

@@ -10,11 +10,13 @@ import '../constants/constants.dart';
 class EditPatientRecordScreen extends StatefulWidget {
   final Record record;
   final String? patientId;
+  final Function refreshCallback;
 
   const EditPatientRecordScreen({
     Key? key,
     required this.record,
     required this.patientId,
+    required this.refreshCallback,
   }) : super(key: key);
 
   @override
@@ -47,6 +49,11 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
 
     // Initialize updated record with existing record data
     _updatedRecord = widget.record;
+  }
+
+  void _handleRecordChanges() {
+    widget.refreshCallback();
+    Navigator.pop(context);
   }
 
   @override
@@ -212,6 +219,7 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
 
       if (response.statusCode == 200) {
         // Record updated successfully
+        _handleRecordChanges();
         print('Record updated successfully');
       } else {
         // Handle the error
