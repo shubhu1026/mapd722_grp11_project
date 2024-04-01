@@ -239,30 +239,43 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
       _formKey.currentState!.save();
 
       try {
-        final newTest = {
-          "testType": _selectedTestType,
-          "diagnosis": _diagnosisController.text,
-          "nurse": _nurseController.text,
-          // Include other fields here
-        };
+        final newRecord = Record(
+          testType: _selectedTestType,
+          diagnosis: _diagnosisController.text,
+          nurse: _nurseController.text,
+          // Concatenate the date and time strings to form the complete datetime string
+          testTime: '${_testDateController.text} ${_testTimeController.text}',
+          category: _categoryController.text,
+          date: _testDateController.text,
+          condition: _conditionController.text,
+          readings: _readingsController.text,
+        );
 
         final response = await http.post(
           Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientID}/medicalTests'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
-          body: jsonEncode(newTest),
+          body: jsonEncode(newRecord.toJson()),
         );
 
-        if (response.statusCode == 201) {
+        if (response.statusCode == 201 || response.statusCode == 200) {
           // Test added successfully
+          final jsonResponse = json.decode(response.body);
+          final newRecordId = jsonResponse['id'] as String?;
+
+          // Perform any necessary actions with the new record ID
+          print('New record ID: $newRecordId');
+
+          // Close the screen or navigate back
           Navigator.pop(context);
         } else {
-          throw Exception('Failed to add new test');
+          // Print error message only if there's an error response from the server
+          print('Failed to add new test: ${response.statusCode}');
         }
       } catch (error) {
+        // Print error message if an exception occurs
         print('Error adding new test: $error');
-        // Handle any network errors or other exceptions
       }
     }
   }

@@ -8,7 +8,7 @@ class Record {
   String category;
   String readings;
   String condition;
-  String id;
+  String? id;
 
   Record({
     required this.date,
@@ -19,8 +19,21 @@ class Record {
     required this.category,
     required this.readings,
     required this.condition,
-    required this.id,
+    this.id,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'date': date,
+      'diagnosis': diagnosis,
+      'testType': testType,
+      'nurse': nurse,
+      'testTime': testTime,
+      'category': category,
+      'readings': readings,
+      'condition': condition,
+    };
+  }
 
   factory Record.fromJson(Map<String, dynamic> json) {
     return Record(
