@@ -8,8 +8,9 @@ import '../constants/constants.dart';
 
 class RecordsTab extends StatefulWidget {
   final String? patientID;
+  final Function refreshCallback;
 
-  const RecordsTab({Key? key, required this.patientID}) : super(key: key);
+  const RecordsTab({Key? key, required this.patientID, required this.refreshCallback}) : super(key: key);
 
   @override
   _RecordsTabState createState() => _RecordsTabState();
@@ -53,11 +54,17 @@ class _RecordsTabState extends State<RecordsTab> {
             child: Text('No records found.'),
           );
         } else {
-          return ListView.builder(
-            itemCount: snapshot.data!.length,
-            itemBuilder: (context, index) {
-              return RecordCard(record: snapshot.data![index], patientId: widget.patientID,);
+          return RefreshIndicator(
+            onRefresh: () async {
+              // Call the refresh callback to fetch records again
+              widget.refreshCallback();
             },
+            child: ListView.builder(
+              itemCount: snapshot.data!.length,
+              itemBuilder: (context, index) {
+                return RecordCard(record: snapshot.data![index], patientId: widget.patientID, refreshCallback: widget.refreshCallback,);
+              },
+            ),
           );
         }
       },

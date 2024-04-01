@@ -8,8 +8,9 @@ import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 
 class AddPatientRecordScreen extends StatefulWidget {
   final String? patientID;
+  final Function refreshCallback;
 
-  const AddPatientRecordScreen({Key? key, required this.patientID}) : super(key: key);
+  const AddPatientRecordScreen({Key? key, required this.patientID, required this.refreshCallback}) : super(key: key);
 
   @override
   _AddPatientRecordsScreenState createState() =>
@@ -59,6 +60,10 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
   void initState() {
     super.initState();
     _selectedTestType = _testTypes.isNotEmpty ? _testTypes[0] : '';
+  }
+
+  void _handleRecordChanges() {
+    widget.refreshCallback();
   }
 
   @override
@@ -267,6 +272,7 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
           // Perform any necessary actions with the new record ID
           print('New record ID: $newRecordId');
 
+          _handleRecordChanges();
           // Close the screen or navigate back
           Navigator.pop(context);
         } else {
