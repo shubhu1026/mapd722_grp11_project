@@ -1,15 +1,20 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:mapd722_mobile_web_development/constants/constants.dart';
 import 'package:mapd722_mobile_web_development/models/record.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
-import '../constants/constants.dart';
 
 class AddPatientRecordScreen extends StatefulWidget {
-  @override
-  _AddPatientRecordsScreenState createState() => _AddPatientRecordsScreenState();
-}
+  final String? patientID;
 
-enum Gender { male, female, other }
+  const AddPatientRecordScreen({Key? key, required this.patientID}) : super(key: key);
+
+  @override
+  _AddPatientRecordsScreenState createState() =>
+      _AddPatientRecordsScreenState();
+}
 
 class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -25,13 +30,36 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
     readings: '',
   );
 
-  TextEditingController _testTypeController = TextEditingController();
-  TextEditingController _diagnosis = TextEditingController();
+  TextEditingController _diagnosisController = TextEditingController();
   TextEditingController _nurseController = TextEditingController();
-  TextEditingController _testTimeController = TextEditingController();
+  TextEditingController _testDateController = TextEditingController(); // Controller for test date
+  TextEditingController _testTimeController = TextEditingController(); // Controller for test time
   TextEditingController _categoryController = TextEditingController();
   TextEditingController _conditionController = TextEditingController();
-  TextEditingController _ReadingsController = TextEditingController();
+  TextEditingController _readingsController = TextEditingController();
+
+  List<String> _testTypes = [
+    'Blood Pressure Test',
+    'Blood Sugar Test',
+    'Cholesterol Test',
+    'Complete Blood Count (CBC)',
+  ];
+
+  String _selectedTestType = '';
+
+  // Map to store test type and condition thresholds
+  final Map<String, Map<String, double>> _conditionThresholds = {
+    'Blood Pressure Test': {'low': 90, 'high': 140},
+    'Blood Sugar Test': {'low': 80, 'high': 180},
+    'Cholesterol Test': {'high': 240},
+    'Complete Blood Count (CBC)': {'low': 4.5, 'high': 10}
+  };
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedTestType = _testTypes.isNotEmpty ? _testTypes[0] : '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,84 +78,126 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
         child: Form(
           key: _formKey,
           child: Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Test Details',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
-                Column(
+            child: Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    CustomTextField(
-                      labelText: 'Test Type',
-                      prefixIcon: Icons.list,
-                      controller: _testTypeController,
+                    SizedBox(height: 1,),
+                    Column(
+                      children: [
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20.0),
+                            border: Border.all(color: Colors.grey),
+                          ),
+                          child: DropdownButtonFormField<String>(
+                            value: _selectedTestType,
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedTestType = newValue!;
+                              });
+                            },
+                            items: _testTypes.map((String testType) {
+                              return DropdownMenuItem<String>(
+                                value: testType,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                                  child: Text(
+                                    testType,
+                                    style: TextStyle(color: Colors.black),
+                                  ),
+                                ),
+                              );
+                            }).toList(),
+                            decoration: InputDecoration(
+                              border: InputBorder.none,
+                              labelText: 'Test Type',
+                              prefixIcon: Icon(Icons.list, color: Colors.grey),
+                            ),
+                            style: TextStyle(color: Colors.black),
+                          ),
+                        ),
+                        SizedBox(height: 10),
+                        CustomTextField(
+                          labelText: 'Diagnosis',
+                          prefixIcon: Icons.health_and_safety,
+                          controller: _diagnosisController,
+                        ),
+                        SizedBox(height: 10),
+                        CustomTextField(
+                          labelText: 'Nurse',
+                          prefixIcon: Icons.woman_rounded,
+                          controller: _nurseController,
+                        ),
+                        SizedBox(height: 10),
+                        CustomTextField(
+                          labelText: 'Test Date',
+                          prefixIcon: Icons.calendar_today,
+                          controller: _testDateController,
+                          onTap: () {
+                            _selectDate(context);
+                          },
+                          readOnly: true,
+                        ),
+                        SizedBox(height: 10),
+                        CustomTextField(
+                          labelText: 'Test Time',
+                          prefixIcon: Icons.access_time,
+                          controller: _testTimeController,
+                          onTap: () {
+                            _selectTime(context);
+                          },
+                          readOnly: true,
+                        ),
+                        SizedBox(height: 10),
+                        CustomTextField(
+                          labelText: 'Category',
+                          prefixIcon: Icons.medical_information,
+                          controller: _categoryController,
+                        ),
+                        SizedBox(height: 10),
+                        CustomTextField(
+                          labelText: 'Readings',
+                          prefixIcon: Icons.numbers,
+                          controller: _readingsController,
+                          keyboardType: TextInputType.number,
+                          onChanged: (value) {
+                            _updateCondition(value ?? '0');
+                          }, // Add onChanged here
+                        ),
+                        SizedBox(height: 10),
+                        CustomTextField(
+                          labelText: 'Condition',
+                          prefixIcon: Icons.medical_services,
+                          controller: _conditionController,
+                          readOnly: true,
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Diagnosis',
-                      prefixIcon: Icons.health_and_safety,
-                      controller: _diagnosis,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'nurse',
-                      prefixIcon: Icons.woman_rounded,
-                      controller: _nurseController,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Test Time',
-                      prefixIcon: Icons.calendar_month,
-                      controller: _testTimeController,
-                      onTap: () {
-                        _selectDate(context);
-                      },
-                      readOnly: true,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Category',
-                      prefixIcon: Icons.medical_information,
-                      controller: _categoryController,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Condition',
-                      prefixIcon: Icons.medical_services,
-                      controller: _conditionController,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Readings',
-                      prefixIcon: Icons.numbers,
-                      controller: _ReadingsController,
+                    ElevatedButton(
+                      onPressed: _submitForm,
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          'Add Test'.toUpperCase(),
+                          style: TextStyle(color: Colors.white, fontSize: 18),
+                        ),
+                      ),
+                      style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.all<Color>(Constants.primaryColor),
+                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20.0),
+                          ),
+                        ),
+                      ),
                     ),
                   ],
                 ),
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      'Add Test'.toUpperCase(),
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Constants.primaryColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              ),
             ),
           ),
         ),
@@ -144,26 +214,77 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
     );
 
     if (pickedDate != null && pickedDate != _record.date) {
-      _testTimeController.text = pickedDate.toLocal().toString().split(' ')[0];
-      _record.date = _testTimeController.text;
+      _testDateController.text = pickedDate.toLocal().toString().split(' ')[0];
+      _record.date = _testDateController.text;
     }
   }
 
-  void _submitForm() {
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? pickedTime = await showTimePicker(
+      context: context,
+      initialTime: TimeOfDay.now(),
+    );
+
+    if (pickedTime != null) {
+      final formattedTime = pickedTime.format(context);
+      setState(() {
+        _testTimeController.text = formattedTime;
+        _record.testTime = formattedTime;
+      });
+    }
+  }
+
+  void _submitForm() async {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      // TODO: Process the patient data, e.g., save to database or perform other actions
-      // For now, print the patient details
-      print('Patient Details:');
-      print('First Name: ${_record.testType}');
-      print('Last Name: ${_record.diagnosis}');
-      print('Address: ${_record.date}');
-      print('DOB: ${_record.nurse}');
-      print('Doctor Name: ${_record.condition}');
-      // ... Other patient details
+      try {
+        final newTest = {
+          "testType": _selectedTestType,
+          "diagnosis": _diagnosisController.text,
+          "nurse": _nurseController.text,
+          // Include other fields here
+        };
 
-      // TODO: Add logic to save the patient to your data source
+        final response = await http.post(
+          Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientID}/medicalTests'),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(newTest),
+        );
+
+        if (response.statusCode == 201) {
+          // Test added successfully
+          Navigator.pop(context);
+        } else {
+          throw Exception('Failed to add new test');
+        }
+      } catch (error) {
+        print('Error adding new test: $error');
+        // Handle any network errors or other exceptions
+      }
+    }
+  }
+
+  void _updateCondition(String value) {
+    if (value.isNotEmpty && _selectedTestType.isNotEmpty) {
+      final thresholds = _conditionThresholds[_selectedTestType];
+      if (thresholds != null) {
+        final double reading = double.tryParse(value) ?? 0.0;
+        if (reading >= (thresholds['low'] ?? double.negativeInfinity) &&
+            reading <= (thresholds['high'] ?? double.infinity)) {
+          setState(() {
+            _conditionController.text = 'Normal';
+            _record.condition = 'Normal';
+          });
+        } else {
+          setState(() {
+            _conditionController.text = 'Critical';
+            _record.condition = 'Critical';
+          });
+        }
+      }
     }
   }
 }

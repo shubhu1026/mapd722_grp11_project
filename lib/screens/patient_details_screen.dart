@@ -1,12 +1,14 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:mapd722_mobile_web_development/screens/patients_screen.dart';
 import 'package:mapd722_mobile_web_development/screens/test_records_screen.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/screens/edit_patient_details_screen.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
 import '../constants/constants.dart';
+import '../util.dart';
 
 class PatientDetailsScreen extends StatefulWidget {
   final String? patientId;
@@ -45,6 +47,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
       print('Error: $error');
     }
   }
+
   Future<void> _deletePatient() async {
     try {
       final response = await http.delete(
@@ -68,7 +71,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
               actions: [
                 TextButton(
                   onPressed: () {
-                    Navigator.pop(context); // Close dialog
+                    Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => PatientsScreen()),
@@ -87,6 +90,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
       print('Error: $error');
     }
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,7 +185,10 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                 width: 5,
                               ),
                               Text(
-                                '${_patientDetails['dateOfBirth'] ?? ''}',
+                                Util.getFormattedDate(
+                                    DateTime.tryParse(_patientDetails['dateOfBirth'] ?? ''),
+                                    // Parse createdAt string to DateTime
+                                    DateFormat('dd MMM, yyyy')) ?? '',
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16),
                               ),
@@ -235,7 +242,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => TestRecordsScreen(),
+                                  builder: (context) => TestRecordsScreen(patientID: widget.patientId,),
                                 ),
                               );
                             },

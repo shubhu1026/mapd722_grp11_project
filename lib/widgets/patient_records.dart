@@ -7,6 +7,10 @@ import 'package:mapd722_mobile_web_development/models/record.dart';
 import '../constants/constants.dart';
 
 class RecordsTab extends StatefulWidget {
+  final String? patientID;
+
+  const RecordsTab({Key? key, required this.patientID}) : super(key: key);
+
   @override
   _RecordsTabState createState() => _RecordsTabState();
 }
@@ -21,25 +25,14 @@ class _RecordsTabState extends State<RecordsTab> {
   }
 
   Future<List<Record>> fetchRecords() async {
-    // Dummy data for testing
-    List<Map<String, dynamic>> dummyData = [
-      {
-        "date": "2023-12-24T01:21:12.336Z",
-        "diagnosis": "High",
-        "testType": "Blood Sugar Test",
-        "nurse": "Sahil",
-        "testTime": "2023-12-15T23:30:17.756Z",
-        "category": "Evening Checkup",
-        "readings": "200",
-        "condition": "Critical",
-        "_id": "657cfba24669fbbe7fce9fe4"
-      },
-      // Add more dummy data as needed
-    ];
-
-    // Parsing dummy data into Record model
-    List<Record> records = dummyData.map((json) => Record.fromJson(json)).toList();
-    return records;
+    final response = await http.get(Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientID}/medicalTests'));
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      List<Record> records = data.map((json) => Record.fromJson(json)).toList();
+      return records;
+    } else {
+      throw Exception('Failed to load records');
+    }
   }
 
   @override

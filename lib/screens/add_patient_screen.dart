@@ -55,6 +55,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
+      resizeToAvoidBottomInset: true,
       appBar: CustomAppBar(
         title: 'Add Patient',
         onBack: () {
@@ -65,144 +66,148 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
         },
       ),
       drawer: CustomDrawer(),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Patient Details',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
-                ),
-                Column(
-                  children: [
-                    CustomTextField(
-                      labelText: 'First Name',
-                      prefixIcon: Icons.person,
-                      controller: _firstNameController,
-                      onSaved: (value) => _patient.firstName = value!,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Last Name',
-                      prefixIcon: Icons.person,
-                      controller: _lastNameController,
-                      onSaved: (value) => _patient.lastName = value!,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Address',
-                      prefixIcon: Icons.pin_drop,
-                      controller: _addressController,
-                      onSaved: (value) => _patient.address = value!,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Date of Birth',
-                      prefixIcon: Icons.calendar_month,
-                      controller: _dobController,
-                      onTap: () {
-                        _selectDate(context);
-                      },
-                      readOnly: true,
-                      onSaved: (value) => _patient.dateOfBirth = value!,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Doctor\'s Name',
-                      prefixIcon: Icons.medical_information,
-                      controller: _doctorController,
-                      onSaved: (value) => _patient.doctor = value!,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Email',
-                      prefixIcon: Icons.email,
-                      controller: _emailController,
-                      onSaved: (value) => _patient.email = value!,
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.0),
-                        border: Border.all(width: 0.6),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Patient Details',
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(height: 20),
+                  Column(
+                    children: [
+                      CustomTextField(
+                        labelText: 'First Name',
+                        prefixIcon: Icons.person,
+                        controller: _firstNameController,
+                        onSaved: (value) => _patient.firstName = value!,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Icon(
-                                Icons.person,
-                                color: Constants.primaryColor,
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        labelText: 'Last Name',
+                        prefixIcon: Icons.person,
+                        controller: _lastNameController,
+                        onSaved: (value) => _patient.lastName = value!,
+                      ),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        labelText: 'Address',
+                        prefixIcon: Icons.pin_drop,
+                        controller: _addressController,
+                        onSaved: (value) => _patient.address = value!,
+                      ),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        labelText: 'Date of Birth',
+                        prefixIcon: Icons.calendar_month,
+                        controller: _dobController,
+                        onTap: () {
+                          _selectDate(context);
+                        },
+                        readOnly: true,
+                        onSaved: (value) => _patient.dateOfBirth = value!,
+                      ),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        labelText: 'Doctor\'s Name',
+                        prefixIcon: Icons.medical_information,
+                        controller: _doctorController,
+                        onSaved: (value) => _patient.doctor = value!,
+                      ),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        labelText: 'Email',
+                        prefixIcon: Icons.email,
+                        controller: _emailController,
+                        onSaved: (value) => _patient.email = value!,
+                      ),
+                      SizedBox(height: 10),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20.0),
+                          border: Border.all(width: 0.6),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Row(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.only(right: 8.0),
+                                child: Icon(
+                                  Icons.person,
+                                  color: Constants.primaryColor,
+                                ),
                               ),
-                            ),
-                            Text('Gender:',
-                                style: Theme.of(context).textTheme.subtitle1),
-                            Radio(
-                              value: Gender.male,
-                              groupValue: _selectedGender,
-                              onChanged: (Gender? value) {
-                                setState(() {
-                                  _selectedGender = value;
-                                  _patient.gender = 'Male'; // Update the gender property
-                                });
-                              },
-                              activeColor: Constants.primaryColor,
-                            ),
-                            Text('Male'),
-                            Radio(
-                              value: Gender.female,
-                              groupValue: _selectedGender,
-                              onChanged: (Gender? value) {
-                                setState(() {
-                                  _selectedGender = value;
-                                  _patient.gender =
-                                  'Female'; // Update the gender property
-                                });
-                              },
-                              activeColor: Constants.primaryColor,
-                            ),
-                            Text('Female'),
-                          ],
+                              Text('Gender:',
+                                  style: Theme.of(context).textTheme.subtitle1),
+                              Radio(
+                                value: Gender.male,
+                                groupValue: _selectedGender,
+                                onChanged: (Gender? value) {
+                                  setState(() {
+                                    _selectedGender = value;
+                                    _patient.gender = 'Male'; // Update the gender property
+                                  });
+                                },
+                                activeColor: Constants.primaryColor,
+                              ),
+                              Text('Male'),
+                              Radio(
+                                value: Gender.female,
+                                groupValue: _selectedGender,
+                                onChanged: (Gender? value) {
+                                  setState(() {
+                                    _selectedGender = value;
+                                    _patient.gender =
+                                    'Female'; // Update the gender property
+                                  });
+                                },
+                                activeColor: Constants.primaryColor,
+                              ),
+                              Text('Female'),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        labelText: 'Phone No.',
+                        prefixIcon: Icons.phone,
+                        controller: _phoneController,
+                        onSaved: (value) => _patient.contactNumber = value!,
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 30),
+                  ElevatedButton(
+                    onPressed: _submitForm,
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        'Submit'.toUpperCase(),
+                        style: TextStyle(color: Colors.white, fontSize: 18),
+                      ),
+                    ),
+                    style: ButtonStyle(
+                      backgroundColor:
+                      MaterialStateProperty.all<Color>(Constants.primaryColor),
+                      shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Phone No.',
-                      prefixIcon: Icons.phone,
-                      controller: _phoneController,
-                      onSaved: (value) => _patient.contactNumber = value!,
-                    ),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      'Submit'.toUpperCase(),
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
                   ),
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Constants.primaryColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

@@ -3,6 +3,10 @@ import 'package:mapd722_mobile_web_development/screens/add_test_record.dart';
 import 'package:mapd722_mobile_web_development/widgets/patient_records.dart';
 
 class TestRecordsScreen extends StatefulWidget {
+  final String? patientID;
+
+  const TestRecordsScreen({Key? key, required this.patientID}) : super(key: key);
+
   @override
   _TestRecordsScreenState createState() => _TestRecordsScreenState();
 }
@@ -68,7 +72,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
           Expanded(
             child: Container(
               color: Color.fromARGB(255, 255, 255, 255),
-              child: RecordsTab(),
+              child: RecordsTab(patientID: widget.patientID,),
             ),
           ),
         ],
@@ -78,7 +82,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
           // Navigate to add test record screen
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => AddPatientRecordScreen()),
+            MaterialPageRoute(builder: (context) => AddPatientRecordScreen(patientID: widget.patientID)),
           ).then((testRecord) {
             // After adding test record, update the list
             if (testRecord != null) {

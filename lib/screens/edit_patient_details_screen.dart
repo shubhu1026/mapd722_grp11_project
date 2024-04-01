@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:mapd722_mobile_web_development/models/patient.dart';
 import 'package:mapd722_mobile_web_development/screens/patient_details_screen.dart';
 import 'package:mapd722_mobile_web_development/screens/patients_screen.dart';
@@ -19,7 +20,7 @@ class EditPatientDetailsScreen extends StatefulWidget {
   _EditPatientDetailsScreenState createState() => _EditPatientDetailsScreenState();
 }
 
-enum Gender { male, female, other }
+enum Gender { Male, Female }
 
 class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -62,11 +63,11 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
       // Set the gender based on existing data
       if (widget.patientDetails!['gender'] == 'Male') {
         setState(() {
-          _selectedGender = Gender.male;
+          _selectedGender = Gender.Male;
         });
       } else if (widget.patientDetails!['gender'] == 'Female') {
         setState(() {
-          _selectedGender = Gender.female;
+          _selectedGender = Gender.Female;
         });
       }
       // Set the patient ID if available
@@ -165,7 +166,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                             Text('Gender:',
                                 style: Theme.of(context).textTheme.subtitle1),
                             Radio(
-                              value: Gender.male,
+                              value: Gender.Male,
                               groupValue: _selectedGender,
                               onChanged: (Gender? value) {
                                 setState(() {
@@ -178,7 +179,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                             ),
                             Text('Male'),
                             Radio(
-                              value: Gender.female,
+                              value: Gender.Female,
                               groupValue: _selectedGender,
                               onChanged: (Gender? value) {
                                 setState(() {
