@@ -1,4 +1,3 @@
-// patient.dart
 import 'package:mapd722_mobile_web_development/models/record.dart';
 
 class Patient {
@@ -10,7 +9,7 @@ class Patient {
   String gender;
   String dateOfBirth;
   String contactNumber;
-  List<Record> recordHistory;
+  List<Record>? recordHistory;
   String doctor;
 
   Patient({
@@ -22,9 +21,26 @@ class Patient {
     required this.gender,
     required this.dateOfBirth,
     required this.contactNumber,
-    required this.recordHistory,
+    this.recordHistory,
     required this.doctor,
   });
+
+  Map<String, dynamic> toJson() {
+    return {
+      '_id': id,
+      'firstName': firstName,
+      'lastName': lastName,
+      'address': address,
+      'email': email,
+      'gender': gender,
+      'dateOfBirth': dateOfBirth,
+      'contactNumber': contactNumber,
+      'recordHistory': recordHistory != null
+          ? recordHistory!.map((record) => record.toJson()).toList()
+          : null,
+      'doctor': doctor,
+    };
+  }
 
   factory Patient.fromJson(Map<String, dynamic> json) {
     return Patient(
@@ -36,8 +52,8 @@ class Patient {
       gender: json['gender'],
       dateOfBirth: json['dateOfBirth'],
       contactNumber: json['contactNumber'],
-      recordHistory: (json['recordHistory'] as List<dynamic>)
-          .map((recordData) => Record.fromJson(recordData))
+      recordHistory: (json['recordHistory'] as List<dynamic>?)
+          ?.map((recordData) => Record.fromJson(recordData))
           .toList(),
       doctor: json['doctor'],
     );

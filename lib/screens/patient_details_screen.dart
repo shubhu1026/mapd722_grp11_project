@@ -9,6 +9,7 @@ import 'package:mapd722_mobile_web_development/screens/edit_patient_details_scre
 import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
 import '../constants/constants.dart';
 import '../util.dart';
+import '../models/patient.dart';
 
 class PatientDetailsScreen extends StatefulWidget {
   final String? patientId;
@@ -22,7 +23,7 @@ class PatientDetailsScreen extends StatefulWidget {
 class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  late Map<String, dynamic> _patientDetails = {};
+  late Patient? _patient; // Change type to Patient?
 
   @override
   void initState() {
@@ -37,8 +38,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
       );
       if (response.statusCode == 200) {
         setState(() {
-          _patientDetails = json.decode(response.body);
-          print('hello : $_patientDetails');
+          _patient = Patient.fromJson(json.decode(response.body));
         });
       } else {
         throw Exception('Failed to fetch patient details');
@@ -54,14 +54,14 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
         Uri.parse('${Constants.baseUrl}patients/${widget.patientId}'),
       );
       if (response.statusCode == 307) {
-          final newUrl = response.headers['location'];
-          final redirectedResponse = await http.delete(
-            Uri.parse(newUrl!),
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-          );
+        final newUrl = response.headers['location'];
+        final redirectedResponse = await http.delete(
+          Uri.parse(newUrl!),
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        );
         showDialog(
           context: context,
           builder: (BuildContext context) {
@@ -105,173 +105,185 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
         },
       ),
       drawer: CustomDrawer(),
-      body: _patientDetails.isEmpty
+      body: _patient == null
           ? Center(child: CircularProgressIndicator(color: Constants.primaryColor))
           : Container(
-            width: double.infinity,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                FractionallySizedBox(
-                  widthFactor: 0.9,
-                  child: Card(
-                    color: Constants.primaryColor,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5.0, horizontal: 5.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+        width: double.infinity,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            FractionallySizedBox(
+              widthFactor: 0.9,
+              child: Card(
+                color: Constants.primaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 5.0,
+                    horizontal: 5.0,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                iconSize: 24,
-                                icon: Icon(Icons.edit, color: Colors.white),
-                                onPressed: () {
-                                  print('Patient Details: $_patientDetails');
-                                   Navigator.push(context,MaterialPageRoute(
-                                    builder: (context) => EditPatientDetailsScreen(patientDetails: _patientDetails)),);
-                                },
-                              ),
-                            ],
-                          ),
-                          CircleAvatar(
-                            radius: 50.0,
-                            child: Image.asset('assets/images/patient_icon.png'),
-                          ),
-                          SizedBox(height: 16.0),
-                          Text(
-                            '${_patientDetails['firstName'] + " " + _patientDetails['lastName']}',
-                            style: TextStyle(
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white),
-                          ),
-                          SizedBox(height: 8.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Address:',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 16),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                '${_patientDetails['address'] ?? ''}',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 2.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Date of Birth:',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 16),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                Util.getFormattedDate(
-                                    DateTime.tryParse(_patientDetails['dateOfBirth'] ?? ''),
-                                    // Parse createdAt string to DateTime
-                                    DateFormat('dd MMM, yyyy')) ?? '',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 2.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Gender:',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 16),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                '${_patientDetails['gender'] ?? ''}',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 2.0),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Text(
-                                'Email:',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    color: Colors.white,
-                                    fontSize: 16),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                '${_patientDetails['email'] ?? ''}',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 16.0),
-                          ElevatedButton(
+                          IconButton(
+                            iconSize: 24,
+                            icon: Icon(Icons.edit, color: Colors.white),
                             onPressed: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                  builder: (context) => TestRecordsScreen(patientID: widget.patientId,),
+                                  builder: (context) => EditPatientDetailsScreen(
+                                    patient: _patient!,
+                                  ),
                                 ),
                               );
                             },
-                            child: Text('View Test Records',
-                                style: TextStyle(color: Constants.primaryColor)),
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              IconButton(
-                                iconSize: 24,
-                                icon:
-                                Icon(Icons.delete_forever, color: Colors.white),
-                                onPressed: () {
-                                   _deletePatient();
-                                  // Add functionality for delete button
-                                },
-                              ),
-                            ],
                           ),
                         ],
                       ),
-                    ),
+                      CircleAvatar(
+                        radius: 50.0,
+                        child: Image.asset('assets/images/patient_icon.png'),
+                      ),
+                      SizedBox(height: 16.0),
+                      Text(
+                        '${_patient!.firstName} ${_patient!.lastName}',
+                        style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 8.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Address:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            '${_patient!.address}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 2.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Date of Birth:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            Util.getFormattedDate(
+                                DateTime.tryParse(_patient!.dateOfBirth),
+                                DateFormat('dd MMM, yyyy')) ??
+                                '',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 2.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Gender:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            '${_patient!.gender}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 2.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Email:',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                          SizedBox(width: 5),
+                          Text(
+                            '${_patient!.email}',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 16.0),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => TestRecordsScreen(patientID: widget.patientId,),
+                            ),
+                          );
+                        },
+                        child: Text(
+                          'View Test Records',
+                          style: TextStyle(color: Constants.primaryColor),
+                        ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          IconButton(
+                            iconSize: 24,
+                            icon: Icon(Icons.delete_forever, color: Colors.white),
+                            onPressed: () {
+                              _deletePatient();
+                              // Add functionality for delete button
+                            },
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                 ),
-              ],
+              ),
             ),
-          ),
+          ],
+        ),
+      ),
     );
   }
-  
 }

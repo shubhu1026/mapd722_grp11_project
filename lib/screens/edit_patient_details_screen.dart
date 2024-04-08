@@ -12,9 +12,9 @@ import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
 import '../constants/constants.dart';
 
 class EditPatientDetailsScreen extends StatefulWidget {
-  final Map<String, dynamic>? patientDetails;
+  final Patient? patient;
 
-  const EditPatientDetailsScreen({Key? key, this.patientDetails}) : super(key: key);
+  const EditPatientDetailsScreen({Key? key, this.patient}) : super(key: key);
 
   @override
   _EditPatientDetailsScreenState createState() => _EditPatientDetailsScreenState();
@@ -24,18 +24,7 @@ enum Gender { Male, Female }
 
 class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _patient = Patient(
-    id: '',
-    firstName: '',
-    lastName: '',
-    address: '',
-    email: '',
-    gender: '',
-    dateOfBirth: '',
-    contactNumber: '',
-    recordHistory: [],
-    doctor: '',
-  );
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   Gender? _selectedGender;
 
@@ -50,35 +39,25 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
   @override
   void initState() {
     super.initState();
-    // Check if patient details exist and set the text controllers
-    if (widget.patientDetails != null) {
-      _firstNameController.text = widget.patientDetails!['firstName'] ?? '';
-      _lastNameController.text = widget.patientDetails!['lastName'] ?? '';
-      _addressController.text = widget.patientDetails!['address'] ?? '';
-      _dobController.text = widget.patientDetails!['dateOfBirth'] ?? '';
-      _doctorController.text = widget.patientDetails!['doctor'] ?? '';
-      _emailController.text = widget.patientDetails!['email'] ?? '';
-      _phoneController.text = widget.patientDetails!['contactNumber'] ?? '';
-
-      // Set the gender based on existing data
-      if (widget.patientDetails!['gender'] == 'Male') {
-        setState(() {
-          _selectedGender = Gender.Male;
-        });
-      } else if (widget.patientDetails!['gender'] == 'Female') {
-        setState(() {
-          _selectedGender = Gender.Female;
-        });
-      }
-      // Set the patient ID if available
-      _patient.id = widget.patientDetails!['_id'] ?? '';
+    if (widget.patient != null) {
+      _populateControllers();
+      _selectedGender = widget.patient!.gender == 'Male' ? Gender.Male : Gender.Female;
     }
+  }
+
+  void _populateControllers() {
+    final patient = widget.patient!;
+    _firstNameController.text = patient.firstName;
+    _lastNameController.text = patient.lastName;
+    _addressController.text = patient.address;
+    _dobController.text = patient.dateOfBirth;
+    _doctorController.text = patient.doctor;
+    _emailController.text = patient.email;
+    _phoneController.text = patient.contactNumber;
   }
 
   @override
   Widget build(BuildContext context) {
-    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
     return Scaffold(
       key: _scaffoldKey,
       appBar: CustomAppBar(
@@ -95,135 +74,123 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Patient Details',
-                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
-                  textAlign: TextAlign.center,
+          child: ListView(
+            children: [
+              Text(
+                'Patient Details',
+                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+                textAlign: TextAlign.center,
+              ),
+              SizedBox(height: 20),
+              CustomTextField(
+                labelText: 'First Name',
+                controller: _firstNameController,
+                prefixIcon: Icons.person,
+              ),
+              SizedBox(height: 20),
+              CustomTextField(
+                labelText: 'Last Name',
+                controller: _lastNameController,
+                prefixIcon: Icons.person,
+              ),
+              SizedBox(height: 20),
+              CustomTextField(
+                labelText: 'Address',
+                controller: _addressController,
+                prefixIcon: Icons.home_work,
+              ),
+              SizedBox(height: 20),
+              CustomTextField(
+                labelText: 'Date of Birth',
+                controller: _dobController,
+                prefixIcon: Icons.calendar_month,
+                onTap: () => _selectDate(context),
+                readOnly: true,
+              ),
+              SizedBox(height: 20),
+              CustomTextField(
+                labelText: 'Doctor\'s Name',
+                controller: _doctorController,
+                prefixIcon: Icons.medical_information,
+              ),
+              SizedBox(height: 20),
+              CustomTextField(
+                labelText: 'Email',
+                controller: _emailController,
+                prefixIcon: Icons.email,
+              ),
+              SizedBox(height: 20),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20.0),
+                  border: Border.all(width: 0.6),
                 ),
-                Column(
-                  children: [
-                    CustomTextField(
-                      labelText: 'First Name',
-                      prefixIcon: Icons.person,
-                      controller: _firstNameController,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Last Name',
-                      prefixIcon: Icons.person,
-                      controller: _lastNameController,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Address',
-                      prefixIcon: Icons.pin_drop,
-                      controller: _addressController,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Date of Birth',
-                      prefixIcon: Icons.calendar_month,
-                      controller: _dobController,
-                      onTap: () {
-                        _selectDate(context);
-                      },
-                      readOnly: true,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Doctor\'s Name',
-                      prefixIcon: Icons.medical_information,
-                      controller: _doctorController,
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Email',
-                      prefixIcon: Icons.email,
-                      controller: _emailController,
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20.0),
-                        border: Border.all(width: 0.6),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.only(right: 8.0),
-                              child: Icon(
-                                Icons.person,
-                                color: Constants.primaryColor,
-                              ),
-                            ),
-                            Text('Gender:',
-                                style: Theme.of(context).textTheme.subtitle1),
-                            Radio(
-                              value: Gender.Male,
-                              groupValue: _selectedGender,
-                              onChanged: (Gender? value) {
-                                setState(() {
-                                  _selectedGender = value;
-                                  _patient.gender =
-                                  'Male'; // Update the gender property
-                                });
-                              },
-                              activeColor: Constants.primaryColor,
-                            ),
-                            Text('Male'),
-                            Radio(
-                              value: Gender.Female,
-                              groupValue: _selectedGender,
-                              onChanged: (Gender? value) {
-                                setState(() {
-                                  _selectedGender = value;
-                                  _patient.gender =
-                                  'Female'; // Update the gender property
-                                });
-                              },
-                              activeColor: Constants.primaryColor,
-                            ),
-                            Text('Female'),
-                          ],
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Icon(
+                          Icons.person,
+                          color: Constants.primaryColor,
                         ),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      labelText: 'Phone No.',
-                      prefixIcon: Icons.phone,
-                      controller: _phoneController,
-                    ),
-                  ],
-                ),
-                ElevatedButton(
-                  onPressed: _submitForm,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      'Save Changes'.toUpperCase(),
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ),
-                  style: ButtonStyle(
-                    backgroundColor:
-                    MaterialStateProperty.all<Color>(Constants.primaryColor),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20.0),
+                      Text('Gender:',
+                          style: Theme.of(context).textTheme.subtitle1),
+                      Radio(
+                        value: Gender.Male,
+                        groupValue: _selectedGender,
+                        onChanged: (Gender? value) {
+                          setState(() {
+                            _selectedGender = value as Gender?;
+                          });
+                        },
+                        activeColor: Constants.primaryColor,
                       ),
+                      Text('Male'),
+                      Radio(
+                        value: Gender.Female,
+                        groupValue: _selectedGender,
+                        onChanged: (Gender? value) {
+                          setState(() {
+                            _selectedGender = value as Gender?;
+                          });
+                        },
+                        activeColor: Constants.primaryColor,
+                      ),
+                      Text('Female'),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              CustomTextField(
+                labelText: 'Phone No.',
+                controller: _phoneController,
+                prefixIcon: Icons.phone,
+              ),
+              SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: _submitForm,
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    'Save Changes'.toUpperCase(),
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+                ),
+                style: ButtonStyle(
+                  backgroundColor:
+                  MaterialStateProperty.all<Color>(Constants.primaryColor),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
                     ),
                   ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -238,85 +205,55 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
       lastDate: DateTime.now(),
     );
 
-    if (pickedDate != null && pickedDate != _patient.dateOfBirth) {
-      _dobController.text = pickedDate.toLocal().toString().split(' ')[0];
-      _patient.dateOfBirth = _dobController.text;
+    if (pickedDate != null) {
+      setState(() {
+        _dobController.text = DateFormat('yyyy-MM-dd').format(pickedDate);
+      });
     }
   }
 
   void _submitForm() {
-  if (_formKey.currentState!.validate()) {
-    _formKey.currentState!.save();
-    _updatePatientDetails();
+    if (_formKey.currentState!.validate()) {
+      // Update patient object with new values
+      widget.patient!.firstName = _firstNameController.text;
+      widget.patient!.lastName = _lastNameController.text;
+      widget.patient!.address = _addressController.text;
+      widget.patient!.dateOfBirth = _dobController.text;
+      widget.patient!.doctor = _doctorController.text;
+      widget.patient!.email = _emailController.text;
+      widget.patient!.gender = _selectedGender == Gender.Male ? 'Male' : 'Female';
+      widget.patient!.contactNumber = _phoneController.text;
+
+      // Call function to update patient details
+      _updatePatientDetails();
+    }
   }
-  }
+
   Future<void> _updatePatientDetails() async {
-  try {
-        print('Updating patient details:');
-    print('First Name: ${_patient.id}');
-    print('Last Name: ${_lastNameController.text}');
-    print('Address: ${_addressController.text}');
-    print('Date of Birth: ${_dobController.text}');
-    print('Doctor: ${_doctorController.text}');
-    print('Email: ${_emailController.text}');
-    print('Gender: ${_selectedGender.toString().split('.').last}');
-    print('Contact Number: ${_phoneController.text}');
-    final response = await http.put(
-      
-      Uri.parse('${Constants.baseUrl}patients/${_patient.id}'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(<String, dynamic>{
-        'firstName': _firstNameController.text,
-        'lastName': _lastNameController.text,
-        'address': _addressController.text,
-        'dateOfBirth': _dobController.text,
-        'doctor': _doctorController.text,
-        'email': _emailController.text,
-        'gender': _selectedGender.toString().split('.').last, // Convert enum to string
-        'contactNumber': _phoneController.text,
-      }),
-    );
-        if (response.statusCode == 307) {
-          // Extract the new URL from the Location header
-          final newUrl = response.headers['location'];
-             print('Redirected response body:  ${newUrl}',);
-          // Make another POST request to the new URL
-          final redirectedResponse = await http.put(
-            Uri.parse(newUrl!),
-            headers: {
-              'Content-Type': 'application/json',
-              'Accept': 'application/json',
-            },
-            body: jsonEncode(<String, dynamic>{
-              'firstName': _firstNameController.text,
-              'lastName': _lastNameController.text,
-              'address': _addressController.text,
-              'dateOfBirth': _dobController.text,
-              'doctor': _doctorController.text,
-              'email': _emailController.text,
-              'gender': _selectedGender.toString().split('.').last, // Convert enum to string
-              'contactNumber': _phoneController.text,
-            }),
-          );
-          // Handle the redirected response
-          print('Redirected response status code: ${redirectedResponse.statusCode}');
-          print('Redirected response body: ${redirectedResponse.body}');
-          // Show success message to the user
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text('Patient Updated successfully'),
-            ),
-          );
-          Navigator.pop(context); // Close the current screen
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => PatientDetailsScreen(patientId: _patient.id)),
-          );
-        }
-  } catch (error) {
-    print('Error: $error');
+    try {
+      final response = await http.put(
+        Uri.parse('${Constants.baseUrl}patients/${widget.patient!.id}'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(widget.patient!.toJson()),
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Patient details updated successfully'),
+          ),
+        );
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => PatientDetailsScreen(patientId: widget.patient!.id)),
+        );
+      } else {
+        throw Exception('Failed to update patient details');
+      }
+    } catch (error) {
+      print('Error: $error');
+    }
   }
 }
-  }
