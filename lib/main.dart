@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/providers/patients_provider.dart';
 import 'package:mapd722_mobile_web_development/screens/home_screen.dart';
+<<<<<<< HEAD
 import 'package:provider/provider.dart';
+=======
+import 'package:flutter_driver/driver_extension.dart';
+>>>>>>> 94b9277de942aef293ba64d5822852547e776736
 
 void main() {
+  enableFlutterDriverExtension();
+
+  
   runApp(const MyApp());
 }
 
