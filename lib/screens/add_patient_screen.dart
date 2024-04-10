@@ -3,11 +3,12 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapd722_mobile_web_development/models/patient.dart';
+import 'package:mapd722_mobile_web_development/providers/patients_provider.dart';
 import 'package:mapd722_mobile_web_development/screens/patients_screen.dart';
-import 'package:mapd722_mobile_web_development/screens/test_records_screen.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
+import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../widgets/patients_tab.dart';
 
@@ -279,6 +280,9 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
           // Handle the redirected response
           print('Redirected response status code: ${redirectedResponse.statusCode}');
           print('Redirected response body: ${redirectedResponse.body}');
+
+          Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
+
           // Show success message to the user
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
@@ -318,7 +322,4 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
       }
     }
   }
-
-
-
 }

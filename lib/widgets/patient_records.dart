@@ -5,64 +5,52 @@ import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/widgets/record_card.dart';
 import 'package:mapd722_mobile_web_development/models/record.dart';
 import '../constants/constants.dart';
+import 'package:provider/provider.dart';
+import '../providers/patient_records_provider.dart';
 
 class RecordsTab extends StatefulWidget {
   final String? patientID;
-  final Function refreshCallback;
 
-  const RecordsTab({Key? key, required this.patientID, required this.refreshCallback}) : super(key: key);
+  const RecordsTab({Key? key, required this.patientID}) : super(key: key);
 
   @override
   _RecordsTabState createState() => _RecordsTabState();
 }
 
 class _RecordsTabState extends State<RecordsTab> {
-  late Future<List<Record>> _record;
-
   @override
   void initState() {
     super.initState();
-    _record = fetchRecords();
-  }
-
-  Future<List<Record>> fetchRecords() async {
-    final response = await http.get(Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientID}/medicalTests'));
-    if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      List<Record> records = data.map((json) => Record.fromJson(json)).toList();
-      return records;
-    } else {
-      throw Exception('Failed to load records');
-    }
+    final provider = Provider.of<PatientRecordsProvider>(context, listen: false);
+    provider.fetchPatientRecords(widget.patientID!);
   }
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Record>>(
-      future: _record,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+    return Consumer<PatientRecordsProvider>(
+      builder: (context, provider, _) {
+        if (provider.isLoading) {
           return Center(
             child: CircularProgressIndicator(color: Constants.primaryColor),
           );
-        } else if (snapshot.hasError) {
+        } else if (provider.error != null) {
           return Center(
-            child: Text('Error: ${snapshot.error}'),
+            child: Text('Error: ${provider.error}'),
           );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (provider.patientRecords.isEmpty) {
           return Center(
             child: Text('No records found.'),
           );
         } else {
           return RefreshIndicator(
             onRefresh: () async {
-              // Call the refresh callback to fetch records again
-              widget.refreshCallback();
+              // Call the fetchPatientRecords method again
+              provider.fetchPatientRecords(widget.patientID!);
             },
             child: ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: provider.patientRecords.length,
               itemBuilder: (context, index) {
-                return RecordCard(record: snapshot.data![index], patientId: widget.patientID, refreshCallback: widget.refreshCallback,);
+                return RecordCard(record: provider.patientRecords[index], patientId: widget.patientID!);
               },
             ),
           );

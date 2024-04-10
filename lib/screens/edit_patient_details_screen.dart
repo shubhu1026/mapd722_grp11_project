@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:mapd722_mobile_web_development/models/patient.dart';
+import 'package:mapd722_mobile_web_development/providers/patient_details_provider.dart';
 import 'package:mapd722_mobile_web_development/screens/patient_details_screen.dart';
 import 'package:mapd722_mobile_web_development/screens/patients_screen.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
+import 'package:provider/provider.dart';
 import '../constants/constants.dart';
+import '../providers/patients_provider.dart';
 
 class EditPatientDetailsScreen extends StatefulWidget {
   final Patient? patient;
@@ -240,6 +243,9 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
       );
 
       if (response.statusCode == 200) {
+        Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(widget.patient!);
+        Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
+
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Patient details updated successfully'),
@@ -249,7 +255,34 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
           context,
           MaterialPageRoute(builder: (context) => PatientDetailsScreen(patientId: widget.patient!.id)),
         );
-      } else {
+      }
+      else if(response.statusCode == 307){
+        final newUrl = response.headers['location'];
+
+        // Make another POST request to the new URL
+        final redirectedResponse = await http.put(
+          Uri.parse(newUrl!),
+          headers: <String, String>{
+            'Content-Type': 'application/json; charset=UTF-8',
+          },
+          body: jsonEncode(widget.patient!.toJson()),
+        );
+        if (redirectedResponse.statusCode == 200) {
+          Provider.of<PatientDetailsProvider>(context, listen: false).setPatientDetails(widget.patient!);
+          Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
+
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Patient details updated successfully'),
+            ),
+          );
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => PatientDetailsScreen(patientId: widget.patient!.id)),
+          );
+        }
+      }
+      else {
         throw Exception('Failed to update patient details');
       }
     } catch (error) {

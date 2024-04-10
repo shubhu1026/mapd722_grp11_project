@@ -1,20 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapd722_mobile_web_development/models/record.dart';
+import 'package:mapd722_mobile_web_development/providers/patient_records_provider.dart';
 import 'package:mapd722_mobile_web_development/screens/edit_test_record_screen.dart';
 import 'package:mapd722_mobile_web_development/screens/test_records_screen.dart';
 import 'package:mapd722_mobile_web_development/constants/constants.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/patients_provider.dart';
 
 class RecordCard extends StatefulWidget {
   final Record record;
   final String? patientId;
 
-  final Function refreshCallback;
-
   const RecordCard({
     required this.record,
     required this.patientId,
-    required this.refreshCallback,
   });
 
   @override
@@ -27,21 +28,22 @@ class _RecordCardState extends State<RecordCard> {
   Future<void> _deleteRecord() async {
     try {
       final response = await http.delete(
-        Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientId}/medicalTests/${widget.record.id}'),
+        Uri.parse(
+            'https://medicare-rest-api.onrender.com/patients/${widget.patientId}/medicalTests/${widget.record.id}'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
       );
       if (response.statusCode == 200) {
-        widget.refreshCallback();
-
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('Test record deleted successfully'),
           ),
         );
-        // Optionally, you can update the UI to reflect the deletion
-        // For example, you may want to remove the record from the list
+
+        Provider.of<PatientRecordsProvider>(context, listen: false)
+            .updatePatientRecords(widget.patientId!);
+        Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
       } else {
         // Handle error
         throw Exception('Failed to delete test record');
@@ -99,34 +101,40 @@ class _RecordCardState extends State<RecordCard> {
                       IconButton(
                         icon: Icon(Icons.edit, color: Colors.black),
                         onPressed: () {
-                          Navigator.push(context,MaterialPageRoute(builder: (context) =>  EditPatientRecordScreen(record: widget.record, patientId: widget.patientId, refreshCallback: widget.refreshCallback,)),);
-
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => EditPatientRecordScreen(
+                                    record: widget.record,
+                                    patientId: widget.patientId)),
+                          );
                         },
                       ),
                       IconButton(
                         icon: Icon(Icons.delete_forever, color: Colors.black),
                         onPressed: () {
                           showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                            title: Text('Confirm Deletion'),
-                            content: Text('Are you sure you want to delete this test record?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Cancel'),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  _deleteRecord();
-                                  Navigator.of(context).pop();
-                                },
-                                child: Text('Delete'),
-                              ),
-                            ],
-                          ),
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: Text('Confirm Deletion'),
+                              content: Text(
+                                  'Are you sure you want to delete this test record?'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    _deleteRecord();
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: Text('Delete'),
+                                ),
+                              ],
+                            ),
                           );
                         },
                       ),

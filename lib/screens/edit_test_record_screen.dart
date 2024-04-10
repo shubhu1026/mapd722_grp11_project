@@ -3,20 +3,21 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapd722_mobile_web_development/models/record.dart';
+import 'package:mapd722_mobile_web_development/providers/patient_records_provider.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
+import 'package:provider/provider.dart';
 import '../constants/constants.dart';
+import '../providers/patients_provider.dart';
 
 class EditPatientRecordScreen extends StatefulWidget {
   final Record record;
   final String? patientId;
-  final Function refreshCallback;
 
   const EditPatientRecordScreen({
     Key? key,
     required this.record,
     required this.patientId,
-    required this.refreshCallback,
   }) : super(key: key);
 
   @override
@@ -49,11 +50,6 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
 
     // Initialize updated record with existing record data
     _updatedRecord = widget.record;
-  }
-
-  void _handleRecordChanges() {
-    widget.refreshCallback();
-    Navigator.pop(context);
   }
 
   @override
@@ -219,7 +215,8 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
 
       if (response.statusCode == 200) {
         // Record updated successfully
-        _handleRecordChanges();
+        Provider.of<PatientRecordsProvider>(context, listen: false).updatePatientRecords(widget.patientId!);
+        Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
         print('Record updated successfully');
       } else {
         // Handle the error

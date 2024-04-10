@@ -1,65 +1,32 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+import 'package:mapd722_mobile_web_development/providers/patients_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:mapd722_mobile_web_development/widgets/patient_card.dart';
-import 'package:mapd722_mobile_web_development/models/patient.dart';
-import 'package:mapd722_mobile_web_development/constants/constants.dart';
 
-class PatientsTab extends StatefulWidget {
-  @override
-  _PatientsTabState createState() => _PatientsTabState();
-}
-
-class _PatientsTabState extends State<PatientsTab> {
-  late Future<List<Patient>> _patients;
-
-  @override
-  void initState() {
-    super.initState();
-    _patients = fetchPatients();
-  }
-
-  Future<List<Patient>> fetchPatients() async {
-    final response = await http
-        .get(Uri.parse('${Constants.baseUrl}patients'));
-
-    if (response.statusCode == 200) {
-      final List<dynamic> data = json.decode(response.body);
-      return data.map((json) => Patient.fromJson(json)).toList();
-    } else {
-      throw Exception('Failed to load patients');
-    }
-  }
-
-  void updatePatientList() {
-    setState(() {
-      _patients = fetchPatients();
-    });
-  }
-
+class PatientsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<List<Patient>>(
-      future: _patients,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
+    return Consumer<PatientsProvider>(
+      builder: (context, provider, _) {
+        if (provider.isLoading) {
           return Center(
-            child: CircularProgressIndicator(color: Constants.primaryColor,),
+            child: CircularProgressIndicator(
+              color: Colors.blue,
+            ),
           );
-        } else if (snapshot.hasError) {
+        } else if (provider.error != null) {
           return Center(
-            child: Text('Error: ${snapshot.error}'),
+            child: Text(provider.error!),
           );
-        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+        } else if (provider.patientList.isEmpty) {
           return Center(
             child: Text('No patients found.'),
           );
         } else {
           return ListView.builder(
-            itemCount: snapshot.data!.length,
+            itemCount: provider.patientList.length,
             itemBuilder: (context, index) {
-              return PatientCard(patient: snapshot.data![index]);
+              return PatientCard(patient: provider.patientList[index]);
             },
           );
         }

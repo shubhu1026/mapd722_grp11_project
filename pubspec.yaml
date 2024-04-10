@@ -13,15 +13,11 @@ dependencies:
     sdk: flutter
 
   cupertino_icons: ^1.0.2
-<<<<<<< HEAD
+
   http: ^0.13.3
   intl: ^0.17.0
   provider:
-=======
-  http: ^1.2.1
-  intl: ^0.19.0
   test: 1.24.9
->>>>>>> 94b9277de942aef293ba64d5822852547e776736
 
 dev_dependencies:
   flutter_test:

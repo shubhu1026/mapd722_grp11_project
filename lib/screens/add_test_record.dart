@@ -3,14 +3,20 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapd722_mobile_web_development/constants/constants.dart';
 import 'package:mapd722_mobile_web_development/models/record.dart';
+import 'package:mapd722_mobile_web_development/providers/patients_provider.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
+import 'package:provider/provider.dart';
+
+import '../providers/patient_records_provider.dart';
 
 class AddPatientRecordScreen extends StatefulWidget {
   final String? patientID;
   final Function refreshCallback;
 
-  const AddPatientRecordScreen({Key? key, required this.patientID, required this.refreshCallback}) : super(key: key);
+  const AddPatientRecordScreen(
+      {Key? key, required this.patientID, required this.refreshCallback})
+      : super(key: key);
 
   @override
   _AddPatientRecordsScreenState createState() =>
@@ -33,8 +39,10 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
 
   TextEditingController _diagnosisController = TextEditingController();
   TextEditingController _nurseController = TextEditingController();
-  TextEditingController _testDateController = TextEditingController(); // Controller for test date
-  TextEditingController _testTimeController = TextEditingController(); // Controller for test time
+  TextEditingController _testDateController =
+      TextEditingController(); // Controller for test date
+  TextEditingController _testTimeController =
+      TextEditingController(); // Controller for test time
   TextEditingController _categoryController = TextEditingController();
   TextEditingController _conditionController = TextEditingController();
   TextEditingController _readingsController = TextEditingController();
@@ -48,7 +56,6 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
 
   String _selectedTestType = '';
 
-  // Map to store test type and condition thresholds
   final Map<String, Map<String, double>> _conditionThresholds = {
     'Blood Pressure Test': {'low': 90, 'high': 140},
     'Blood Sugar Test': {'low': 80, 'high': 180},
@@ -60,10 +67,6 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
   void initState() {
     super.initState();
     _selectedTestType = _testTypes.isNotEmpty ? _testTypes[0] : '';
-  }
-
-  void _handleRecordChanges() {
-    widget.refreshCallback();
   }
 
   @override
@@ -89,7 +92,9 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(height: 1,),
+                    SizedBox(
+                      height: 1,
+                    ),
                     Column(
                       children: [
                         Container(
@@ -108,7 +113,8 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                               return DropdownMenuItem<String>(
                                 value: testType,
                                 child: Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: 12.0),
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 12.0),
                                   child: Text(
                                     testType,
                                     style: TextStyle(color: Colors.black),
@@ -191,9 +197,10 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                         ),
                       ),
                       style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all<Color>(Constants.primaryColor),
-                        shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        backgroundColor: MaterialStateProperty.all<Color>(
+                            Constants.primaryColor),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
@@ -244,6 +251,9 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
       _formKey.currentState!.save();
 
       try {
+        final provider =
+            Provider.of<PatientRecordsProvider>(context, listen: false);
+
         final newRecord = Record(
           testType: _selectedTestType,
           diagnosis: _diagnosisController.text,
@@ -257,7 +267,8 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
         );
 
         final response = await http.post(
-          Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientID}/medicalTests'),
+          Uri.parse(
+              'https://medicare-rest-api.onrender.com/patients/${widget.patientID}/medicalTests'),
           headers: <String, String>{
             'Content-Type': 'application/json; charset=UTF-8',
           },
@@ -272,9 +283,28 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
           // Perform any necessary actions with the new record ID
           print('New record ID: $newRecordId');
 
-          _handleRecordChanges();
+          await provider.updatePatientRecords(widget.patientID!);
+          Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
           // Close the screen or navigate back
           Navigator.pop(context);
+        } else if (response.statusCode == 307) {
+          // Extract the new URL from the Location header
+          final newUrl = response.headers['location'];
+
+          // Make another POST request to the new URL
+          final redirectedResponse = await http.post(
+            Uri.parse(newUrl!),
+            headers: {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+            },
+            body: jsonEncode(newRecord.toJson()),
+          );
+
+          if (redirectedResponse.statusCode == 200 ||
+              redirectedResponse.statusCode == 201) {
+            await provider.updatePatientRecords(widget.patientID!);
+          }
         } else {
           // Print error message only if there's an error response from the server
           print('Failed to add new test: ${response.statusCode}');

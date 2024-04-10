@@ -75,7 +75,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
           Expanded(
             child: Container(
               color: Color.fromARGB(255, 255, 255, 255),
-              child: RecordsTab(patientID: widget.patientID, refreshCallback: refreshRecords,),
+              child: RecordsTab(patientID: widget.patientID),
             ),
           ),
         ],
