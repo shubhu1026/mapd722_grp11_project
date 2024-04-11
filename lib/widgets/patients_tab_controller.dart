@@ -3,6 +3,8 @@ import 'package:mapd722_mobile_web_development/widgets/critical_patients_tab.dar
 import 'package:mapd722_mobile_web_development/widgets/patients_tab.dart';
 import 'package:mapd722_mobile_web_development/constants/constants.dart';
 
+import '../screens/add_patient_screen.dart';
+
 class PatientsTabController extends StatelessWidget {
   final TabController tabController;
 
@@ -52,6 +54,62 @@ class PatientsTabController extends StatelessWidget {
                   child: PatientsTab(),
                 ),
               ],
+            ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black26, // Shadow color
+                  spreadRadius: 5, // Spread radius
+                  blurRadius: 7, // Blur radius
+                  offset: Offset(0, 2), // Offset
+                ),
+              ],
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AddPatientScreen(),
+                          ),
+                        );
+                      },
+                      tooltip: 'Add Patients',
+                      splashRadius: 24,
+                      padding: EdgeInsets.all(8),
+                      icon: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.add,
+                            color: Constants.primaryColor,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            'Add Patient',
+                            style: TextStyle(
+                              fontSize: 17,
+                              color: Constants.primaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ],

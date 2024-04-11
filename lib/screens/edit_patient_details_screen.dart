@@ -13,6 +13,7 @@ import 'package:mapd722_mobile_web_development/widgets/custom_drawer.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../providers/patients_provider.dart';
+import '../util.dart';
 
 class EditPatientDetailsScreen extends StatefulWidget {
   final Patient? patient;
@@ -53,7 +54,11 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
     _firstNameController.text = patient.firstName;
     _lastNameController.text = patient.lastName;
     _addressController.text = patient.address;
-    _dobController.text = patient.dateOfBirth;
+    _dobController.text = Util.getFormattedDate(
+        DateTime.tryParse(patient.dateOfBirth ?? ''),
+        DateFormat('yyyy-MM-dd')) ??
+        '';
+
     _doctorController.text = patient.doctor;
     _emailController.text = patient.email;
     _phoneController.text = patient.contactNumber;
@@ -90,19 +95,19 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                 controller: _firstNameController,
                 prefixIcon: Icons.person,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Last Name',
                 controller: _lastNameController,
                 prefixIcon: Icons.person,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Address',
                 controller: _addressController,
                 prefixIcon: Icons.home_work,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Date of Birth',
                 controller: _dobController,
@@ -110,19 +115,19 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                 onTap: () => _selectDate(context),
                 readOnly: true,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Doctor\'s Name',
                 controller: _doctorController,
                 prefixIcon: Icons.medical_information,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Email',
                 controller: _emailController,
                 prefixIcon: Icons.email,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
@@ -167,13 +172,13 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                   ),
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Phone No.',
                 controller: _phoneController,
                 prefixIcon: Icons.phone,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _submitForm,
                 child: Padding(

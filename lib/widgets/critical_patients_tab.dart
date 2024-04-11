@@ -3,6 +3,8 @@ import 'package:mapd722_mobile_web_development/providers/patients_provider.dart'
 import 'package:mapd722_mobile_web_development/widgets/patient_card.dart';
 import 'package:provider/provider.dart';
 
+import 'critical_patient_card.dart';
+
 class CriticalPatientsTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -24,7 +26,7 @@ class CriticalPatientsTab extends StatelessWidget {
           return ListView.builder(
             itemCount: provider.criticalPatientList.length,
             itemBuilder: (context, index) {
-              return PatientCard(patient: provider.criticalPatientList[index]);
+              return CriticalPatientCard(patient: provider.criticalPatientList[index]);
             },
           );
         }

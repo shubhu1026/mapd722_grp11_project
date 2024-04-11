@@ -70,8 +70,8 @@ class PatientsProvider extends ChangeNotifier {
   }
 
   Future<void> updatePatientLists() async {
-    _fetchPatients();
-    _fetchCriticalPatients();
+    await _fetchPatients();
+    await _fetchCriticalPatients();
     notifyListeners();
   }
 }

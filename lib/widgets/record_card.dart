@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:mapd722_mobile_web_development/models/record.dart';
 import 'package:mapd722_mobile_web_development/providers/patient_records_provider.dart';
 import 'package:mapd722_mobile_web_development/screens/edit_test_record_screen.dart';
@@ -8,6 +9,7 @@ import 'package:mapd722_mobile_web_development/constants/constants.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/patients_provider.dart';
+import '../util.dart';
 
 class RecordCard extends StatefulWidget {
   final Record record;
@@ -43,7 +45,8 @@ class _RecordCardState extends State<RecordCard> {
 
         Provider.of<PatientRecordsProvider>(context, listen: false)
             .updatePatientRecords(widget.patientId!);
-        Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
+        Provider.of<PatientsProvider>(context, listen: false)
+            .updatePatientLists();
       } else {
         // Handle error
         throw Exception('Failed to delete test record');
@@ -60,11 +63,10 @@ class _RecordCardState extends State<RecordCard> {
 
   @override
   Widget build(BuildContext context) {
-    Color cardColor = Colors.white; // Default color is white
+    Color cardColor = Constants.primaryColor;
 
-    // Check if the condition is critical, then change the cardColor to primary color
     if (widget.record.condition.toLowerCase() == "critical") {
-      cardColor = Colors.red; // Use primary color from constants
+      cardColor = Colors.red;
     }
 
     return GestureDetector(
@@ -80,72 +82,38 @@ class _RecordCardState extends State<RecordCard> {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
         ),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${widget.record.testType}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                      color: Colors.black87,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            ListTile(
+                leading: Icon(
+                  Icons.file_copy,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                title: Text(
+                  '${widget.record.testType}',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),
+                ),
+                trailing:
+                    IconButton(
+                      icon: Icon(
+                          _expanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
+                      color: Colors.white,
+                      onPressed: () {
+                        setState(() {
+                          _expanded = !_expanded;
+                        });
+                      },
                     ),
-                  ),
-                  Row(
-                    children: [
-                      IconButton(
-                        icon: Icon(Icons.edit, color: Colors.black),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => EditPatientRecordScreen(
-                                    record: widget.record,
-                                    patientId: widget.patientId)),
-                          );
-                        },
-                      ),
-                      IconButton(
-                        icon: Icon(Icons.delete_forever, color: Colors.black),
-                        onPressed: () {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: Text('Confirm Deletion'),
-                              content: Text(
-                                  'Are you sure you want to delete this test record?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Cancel'),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    _deleteRecord();
-                                    Navigator.of(context).pop();
-                                  },
-                                  child: Text('Delete'),
-                                ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              SizedBox(height: 8),
-              if (_expanded) ..._buildAdditionalInfo(),
-            ],
-          ),
+            ),
+            if (_expanded) ..._buildAdditionalInfo(),
+          ],
         ),
       ),
     );
@@ -153,19 +121,190 @@ class _RecordCardState extends State<RecordCard> {
 
   List<Widget> _buildAdditionalInfo() {
     return [
-      _buildInfoItem('Date:', widget.record.date),
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Divider(
+          height: 1, // Height of the divider
+          thickness: 1, // Thickness of the divider
+          color: Colors.white,// Right indent
+        ),
+      ),
+      _buildInfoItem(
+        'Date:',
+        Util.getFormattedDate(DateTime.tryParse(widget.record.date ?? ''),
+                DateFormat('dd MMM, yyyy')) ??
+            '',
+      ),
       _buildInfoItem('Diagnosis:', widget.record.diagnosis),
       _buildInfoItem('Nurse:', widget.record.nurse),
-      _buildInfoItem('Test Time:', widget.record.testTime),
+      _buildInfoItem(
+        'Date:',
+        Util.getFormattedTime(DateTime.tryParse(widget.record.testTime ?? ''),
+                DateFormat('hh:mm a')) ??
+            '',
+      ),
       _buildInfoItem('Category:', widget.record.category),
       _buildInfoItem('Readings:', widget.record.readings),
       _buildInfoItem('Condition:', widget.record.condition),
+      Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Divider(
+          height: 1, // Height of the divider
+          thickness: 1, // Thickness of the divider
+          color: Colors.white,// Right indent
+        ),
+      ),
+      Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0,),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            GestureDetector(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) => AlertDialog(
+                    title: Text('Confirm Deletion'),
+                    content: Text(
+                        'Are you sure you want to delete this test record?'),
+                    actions: [
+                      TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancel'),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          _deleteRecord();
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Delete'),
+                      ),
+                    ],
+                  ),
+                );
+              },
+              child: Container(
+                child: Row(
+                  children: [
+                    Text(
+                      "Delete",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 17,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Icon(Icons.delete, color: Colors.white,),
+                  ],
+                ),
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => EditPatientRecordScreen(
+                          record: widget.record,
+                          patientId: widget.patientId)),
+                );
+              },
+              child: Container(
+                child: Row(
+                  children: [
+                    Text(
+                      "Edit",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 17,
+                      ),
+                    ),
+                    SizedBox(
+                      width: 4,
+                    ),
+                    Icon(Icons.edit_note, color: Colors.white,),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+      // Row(
+      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      //   children: [
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      //         child: TextButton(
+      //           onPressed: () {},
+      //           style: ButtonStyle(
+      //             backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      //             foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+      //             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+      //               RoundedRectangleBorder(
+      //                 borderRadius: BorderRadius.circular(8.0),
+      //               ),
+      //             ),
+      //           ),
+      //           child: Row(
+      //             mainAxisSize: MainAxisSize.min,
+      //             children: <Widget>[
+      //               Icon(Icons.edit),
+      //               SizedBox(width: 8),
+      //               Text("Edit"),
+      //             ],
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //     SizedBox(width: 80,),
+      //     Expanded(
+      //       child: Padding(
+      //         padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      //         child: TextButton(
+      //           onPressed: () {},
+      //           style: ButtonStyle(
+      //             backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+      //             foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
+      //             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+      //               RoundedRectangleBorder(
+      //                 borderRadius: BorderRadius.circular(8.0),
+      //               ),
+      //             ),
+      //           ),
+      //           child:
+      //           Row(
+      //             mainAxisSize: MainAxisSize.max,
+      //             children: <Widget>[
+      //               Icon(Icons.delete),
+      //               SizedBox(width: 8),
+      //               Text("Delete"),
+      //             ],
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ],
+      // ),
+      SizedBox(
+        height: 10,
+      ),
     ];
   }
 
   Widget _buildInfoItem(String title, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(
+        vertical: 4,
+        horizontal: 16,
+      ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -173,14 +312,15 @@ class _RecordCardState extends State<RecordCard> {
             title,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
+              fontSize: 15,
             ),
           ),
           SizedBox(width: 8),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(color: Colors.black87),
+              style: TextStyle(color: Colors.white, fontSize: 15,),
             ),
           ),
         ],

@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class Util {
@@ -12,5 +11,17 @@ class Util {
       print(e);
     }
     return formatted;
+  }
+
+  static String? getFormattedTime(DateTime? dateTime, DateFormat formatter) {
+    if (dateTime == null) return "";
+
+    String? formattedTime;
+    try {
+      formattedTime = formatter.format(dateTime);
+    } catch (e) {
+      print(e);
+    }
+    return formattedTime;
   }
 }

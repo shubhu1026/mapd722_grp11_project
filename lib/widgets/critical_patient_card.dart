@@ -5,16 +5,16 @@ import 'package:mapd722_mobile_web_development/screens/patient_details_screen.da
 import '../constants/constants.dart';
 import '../util.dart';
 
-class PatientCard extends StatefulWidget {
+class CriticalPatientCard extends StatefulWidget {
   final Patient patient;
 
-  const PatientCard({required this.patient});
+  const CriticalPatientCard({required this.patient});
 
   @override
-  _PatientCardState createState() => _PatientCardState();
+  _CriticalPatientCardState createState() => _CriticalPatientCardState();
 }
 
-class _PatientCardState extends State<PatientCard> {
+class _CriticalPatientCardState extends State<CriticalPatientCard> {
   bool _expanded = false;
 
   @override
@@ -33,6 +33,7 @@ class _PatientCardState extends State<PatientCard> {
         });
       },
       child: Card(
+        color: Colors.red,
         margin: EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
           children: [
@@ -46,6 +47,7 @@ class _PatientCardState extends State<PatientCard> {
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 17,
+                  color: Colors.white,
                 ),
               ),
               subtitle: Row(
@@ -53,7 +55,7 @@ class _PatientCardState extends State<PatientCard> {
                   Text(
                     'Date of Birth: ',
                     style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w500),
                   ),
@@ -62,11 +64,11 @@ class _PatientCardState extends State<PatientCard> {
                   ),
                   Text(
                     Util.getFormattedDate(
-                        DateTime.tryParse(widget.patient.dateOfBirth ?? ''),
-                        DateFormat('dd MMM, yyyy')) ??
+                            DateTime.tryParse(widget.patient.dateOfBirth ?? ''),
+                            DateFormat('dd MMM, yyyy')) ??
                         '',
                     style: TextStyle(
-                      color: Colors.black87,
+                      color: Colors.white,
                       fontSize: 15,
                     ),
                   )
@@ -75,7 +77,7 @@ class _PatientCardState extends State<PatientCard> {
               trailing: IconButton(
                 icon: Icon(
                     _expanded ? Icons.arrow_drop_up : Icons.arrow_drop_down),
-                color: Colors.black87,
+                color: Colors.white,
                 onPressed: () {
                   setState(() {
                     _expanded = !_expanded;
@@ -83,7 +85,6 @@ class _PatientCardState extends State<PatientCard> {
                 },
               ),
             ),
-            SizedBox(height: 10,),
             if (_expanded) ..._buildAdditionalInfo(),
           ],
         ),
@@ -114,7 +115,7 @@ class _PatientCardState extends State<PatientCard> {
             title,
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: Colors.white,
               fontSize: 15,
             ),
           ),
@@ -122,7 +123,7 @@ class _PatientCardState extends State<PatientCard> {
           Expanded(
             child: Text(
               value,
-              style: TextStyle(color: Colors.black87, fontSize: 15),
+              style: TextStyle(color: Colors.white, fontSize: 15),
             ),
           ),
         ],

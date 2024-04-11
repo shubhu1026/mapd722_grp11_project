@@ -12,10 +12,9 @@ import '../providers/patient_records_provider.dart';
 
 class AddPatientRecordScreen extends StatefulWidget {
   final String? patientID;
-  final Function refreshCallback;
 
   const AddPatientRecordScreen(
-      {Key? key, required this.patientID, required this.refreshCallback})
+      {Key? key, required this.patientID})
       : super(key: key);
 
   @override
@@ -40,9 +39,9 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
   TextEditingController _diagnosisController = TextEditingController();
   TextEditingController _nurseController = TextEditingController();
   TextEditingController _testDateController =
-      TextEditingController(); // Controller for test date
+      TextEditingController();
   TextEditingController _testTimeController =
-      TextEditingController(); // Controller for test time
+      TextEditingController();
   TextEditingController _categoryController = TextEditingController();
   TextEditingController _conditionController = TextEditingController();
   TextEditingController _readingsController = TextEditingController();
@@ -304,6 +303,7 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
           if (redirectedResponse.statusCode == 200 ||
               redirectedResponse.statusCode == 201) {
             await provider.updatePatientRecords(widget.patientID!);
+            Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
           }
         } else {
           // Print error message only if there's an error response from the server

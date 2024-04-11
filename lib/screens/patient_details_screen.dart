@@ -96,6 +96,33 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
     }
   }
 
+  Future<void> _showDeleteDialogBox() async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confirm Deletion'),
+          content: Text('Are you sure you want to delete this patient?'),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                _deletePatient();
+               },
+              child: Text('Delete'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -152,6 +179,14 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                             ),
                                           ),
                                         );
+                                      },
+                                    ),
+                                    IconButton(
+                                      iconSize: 24,
+                                      icon: Icon(Icons.delete,
+                                          color: Colors.red),
+                                      onPressed: () {
+                                        _showDeleteDialogBox();
                                       },
                                     ),
                                   ],
@@ -280,20 +315,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                         color: Constants.primaryColor),
                                   ),
                                 ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    IconButton(
-                                      iconSize: 24,
-                                      icon: Icon(Icons.delete_forever,
-                                          color: Colors.white),
-                                      onPressed: () {
-                                        _deletePatient();
-                                        // Add functionality for delete button
-                                      },
-                                    ),
-                                  ],
-                                ),
+                                SizedBox(height: 6,)
                               ],
                             ),
                           ),

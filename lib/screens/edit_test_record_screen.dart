@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:mapd722_mobile_web_development/models/record.dart';
 import 'package:mapd722_mobile_web_development/providers/patient_records_provider.dart';
 import 'package:mapd722_mobile_web_development/widgets/custom_app_bar.dart';
@@ -43,7 +44,10 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     _testTypeController.text = widget.record.testType;
     _diagnosisController.text = widget.record.diagnosis;
     _nurseController.text = widget.record.nurse;
-    _testTimeController.text = widget.record.testTime;
+
+    DateTime parsedDate = DateTime.parse(widget.record.testTime);
+    String formattedDate = DateFormat('HH mm').format(parsedDate);
+    _testTimeController.text = formattedDate;
     _categoryController.text = widget.record.category;
     _conditionController.text = widget.record.condition;
     _readingsController.text = widget.record.readings;
@@ -186,13 +190,28 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     );
 
     if (pickedTime != null) {
-      final formattedTime = pickedTime.format(context);
+      // Get the current date
+      final currentDate = DateTime.now();
+
+      // Create a new DateTime object using the selected time and the current date
+      final selectedDateTime = DateTime(
+        currentDate.year,
+        currentDate.month,
+        currentDate.day,
+        pickedTime.hour,
+        pickedTime.minute,
+      );
+
+      // Format the selected time
+      final formattedTime = DateFormat('HH:mm').format(selectedDateTime);
+
       setState(() {
         _testTimeController.text = formattedTime;
         _updatedRecord.testTime = formattedTime;
       });
     }
   }
+
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -205,6 +224,23 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
 
   Future<void> _updateRecord() async {
     try {
+      final testTime = DateFormat('HH:mm').parse(_updatedRecord.testTime);
+
+      // Get the current date
+      final currentDate = DateTime.now();
+
+      // Combine the current date with the parsed time
+      final updatedDateTime = DateTime(
+        currentDate.year,
+        currentDate.month,
+        currentDate.day,
+        testTime.hour,
+        testTime.minute,
+      );
+
+      // Update the test time in the updated record
+      _updatedRecord.testTime = DateFormat('yyyy-MM-dd HH:mm').format(updatedDateTime);
+
       final response = await http.put(
         Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientId}/medicalTests/${widget.record.id}'), // Replace with your API endpoint
         headers: <String, String>{
