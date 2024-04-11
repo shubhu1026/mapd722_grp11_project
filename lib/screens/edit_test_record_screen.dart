@@ -72,111 +72,114 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                'Test Details',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(height: 10),
-              CustomTextField(
-                labelText: 'Test Type',
-                prefixIcon: Icons.list,
-                controller: _testTypeController,
-                onChanged: (value) {
-                  setState(() {
-                    _updatedRecord.testType = value;
-                  });
-                },
-              ),
-              SizedBox(height: 10),
-              CustomTextField(
-                labelText: 'Diagnosis',
-                prefixIcon: Icons.health_and_safety,
-                controller: _diagnosisController,
-                onChanged: (value) {
-                  setState(() {
-                    _updatedRecord.diagnosis = value;
-                  });
-                },
-              ),
-              SizedBox(height: 10),
-              CustomTextField(
-                labelText: 'Nurse',
-                prefixIcon: Icons.woman_rounded,
-                controller: _nurseController,
-                onChanged: (value) {
-                  setState(() {
-                    _updatedRecord.nurse = value;
-                  });
-                },
-              ),
-              SizedBox(height: 10),
-              CustomTextField(
-                labelText: 'Test Time',
-                prefixIcon: Icons.access_time,
-                controller: _testTimeController,
-                readOnly: true,
-                onTap: () {
-                  _selectTime(context);
-                },
-              ),
-              SizedBox(height: 10),
-              CustomTextField(
-                labelText: 'Category',
-                prefixIcon: Icons.medical_information,
-                controller: _categoryController,
-                onChanged: (value) {
-                  setState(() {
-                    _updatedRecord.category = value;
-                  });
-                },
-              ),
-              SizedBox(height: 10),
-              CustomTextField(
-                labelText: 'Condition',
-                prefixIcon: Icons.medical_services,
-                controller: _conditionController,
-                onChanged: (value) {
-                  setState(() {
-                    _updatedRecord.condition = value;
-                  });
-                },
-              ),
-              SizedBox(height: 10),
-              CustomTextField(
-                labelText: 'Readings',
-                prefixIcon: Icons.numbers,
-                controller: _readingsController,
-                keyboardType: TextInputType.number,
-                onChanged: (value) {
-                  setState(() {
-                    _updatedRecord.readings = value;
-                  });
-                },
-              ),
-              SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _submitForm,
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    'Save Test'.toUpperCase(),
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                Text(
+                  'Test Details',
+                  style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+                  textAlign: TextAlign.center,
                 ),
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all<Color>(Constants.primaryColor),
-                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
+                SizedBox(height: 10),
+                CustomTextField(
+                  labelText: 'Test Type',
+                  prefixIcon: Icons.list,
+                  controller: _testTypeController,
+                  onChanged: (value) {
+                    setState(() {
+                      _updatedRecord.testType = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  labelText: 'Diagnosis',
+                  prefixIcon: Icons.health_and_safety,
+                  controller: _diagnosisController,
+                  onChanged: (value) {
+                    setState(() {
+                      _updatedRecord.diagnosis = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  labelText: 'Nurse',
+                  prefixIcon: Icons.woman_rounded,
+                  controller: _nurseController,
+                  onChanged: (value) {
+                    setState(() {
+                      _updatedRecord.nurse = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  labelText: 'Test Time',
+                  prefixIcon: Icons.access_time,
+                  controller: _testTimeController,
+                  readOnly: true,
+                  onTap: () {
+                    _selectTime(context);
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  labelText: 'Category',
+                  prefixIcon: Icons.medical_information,
+                  controller: _categoryController,
+                  onChanged: (value) {
+                    setState(() {
+                      _updatedRecord.category = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  labelText: 'Readings',
+                  prefixIcon: Icons.numbers,
+                  controller: _readingsController,
+                  keyboardType: TextInputType.number,
+                  onChanged: (value) {
+                    setState(() {
+                      _updatedRecord.readings = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 10,),
+                CustomTextField(
+                  labelText: 'Condition',
+                  prefixIcon: Icons.medical_services,
+                  controller: _conditionController,
+                  readOnly: true,
+                  onChanged: (value) {
+                    setState(() {
+                      _updatedRecord.condition = value;
+                    });
+                  },
+                ),
+                SizedBox(height: 20),
+                ElevatedButton(
+                  onPressed: _submitForm,
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      'Save Test'.toUpperCase(),
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                  ),
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all<Color>(Constants.primaryColor),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20.0),
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
