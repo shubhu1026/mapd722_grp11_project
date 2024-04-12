@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/widgets/record_card.dart';
 import 'package:mapd722_mobile_web_development/models/record.dart';
+import 'package:mapd722_mobile_web_development/widgets/white_bg_text_field.dart';
 import '../constants/constants.dart';
 import 'package:provider/provider.dart';
 import '../providers/patient_records_provider.dart';
@@ -18,6 +19,9 @@ class RecordsTab extends StatefulWidget {
 }
 
 class _RecordsTabState extends State<RecordsTab> {
+
+  TextEditingController _searchController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -29,32 +33,51 @@ class _RecordsTabState extends State<RecordsTab> {
   Widget build(BuildContext context) {
     return Consumer<PatientRecordsProvider>(
       builder: (context, provider, _) {
-        if (provider.isLoading) {
-          return Center(
-            child: CircularProgressIndicator(color: Constants.primaryColor),
-          );
-        } else if (provider.error != null) {
-          return Center(
-            child: Text('Error: ${provider.error}'),
-          );
-        } else if (provider.patientRecords.isEmpty) {
-          return Center(
-            child: Text('No records found.'),
-          );
-        } else {
-          return RefreshIndicator(
-            onRefresh: () async {
-              // Call the fetchPatientRecords method again
-              provider.fetchPatientRecords(widget.patientID!);
-            },
-            child: ListView.builder(
-              itemCount: provider.patientRecords.length,
-              itemBuilder: (context, index) {
-                return RecordCard(record: provider.patientRecords[index], patientId: widget.patientID!);
-              },
+        return Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: WhiteBGTextField(
+                labelText: 'Search',
+                prefixIcon: Icons.search,
+                controller: _searchController,
+                onChanged: (value) {
+                  Provider.of<PatientRecordsProvider>(context, listen: false)
+                      .searchRecords(value);
+                },
+              ),
             ),
-          );
-        }
+            if (provider.isLoading) ...[
+              Center(
+                child: CircularProgressIndicator(color: Constants.primaryColor),
+              ),
+            ] else if (provider.error != null) ...[
+              Center(
+                child: Text('Error: ${provider.error}'),
+              ),
+            ] else if (provider.filteredRecords.isEmpty && _searchController.text.isNotEmpty) ...[
+              // Check if isLoading is false and patientRecords is empty
+              if (!provider.isLoading)
+                Center(
+                  child: Text('No records found.'),
+                ),
+            ] else ...[
+              Expanded( // Wrap with Expanded to take up all available space
+                child: RefreshIndicator(
+                  onRefresh: () async {
+                    provider.fetchPatientRecords(widget.patientID!);
+                  },
+                  child: ListView.builder(
+                    itemCount: provider.filteredRecords.length,
+                    itemBuilder: (context, index) {
+                      return RecordCard(record: provider.filteredRecords[index], patientId: widget.patientID!);
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ],
+        );
       },
     );
   }

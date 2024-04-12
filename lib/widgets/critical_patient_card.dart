@@ -85,6 +85,7 @@ class _CriticalPatientCardState extends State<CriticalPatientCard> {
                 },
               ),
             ),
+            SizedBox(height: 10,),
             if (_expanded) ..._buildAdditionalInfo(),
           ],
         ),

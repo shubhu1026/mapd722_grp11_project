@@ -8,10 +8,12 @@ import '../constants/constants.dart';
 
 class PatientRecordsProvider extends ChangeNotifier {
   List<Record> _patientRecords = [];
+  List<Record> _filteredRecords = [];
   bool _isLoading = false;
   String? _error;
 
   List<Record> get patientRecords => _patientRecords;
+  List<Record> get filteredRecords => _filteredRecords;
 
   bool get isLoading => _isLoading;
 
@@ -33,6 +35,7 @@ class PatientRecordsProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         _patientRecords = data.map((json) => Record.fromJson(json)).toList();
+        _filteredRecords = List.from(_patientRecords);
         _error = null;
       } else {
         _error = 'Failed to load patient records';
@@ -49,4 +52,19 @@ class PatientRecordsProvider extends ChangeNotifier {
     fetchPatientRecords(patientId);
     notifyListeners();
   }
+
+  void searchRecords(String query) {
+    if (query.isEmpty) {
+      _filteredRecords = List.from(_patientRecords); // Reset filtered list
+      notifyListeners();
+      return;
+    }
+
+    _filteredRecords = _patientRecords.where((record) {
+      return record.testType.toLowerCase().contains(query.toLowerCase()) || record.nurse.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    notifyListeners();
+  }
+
 }

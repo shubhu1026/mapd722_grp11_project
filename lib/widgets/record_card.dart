@@ -100,6 +100,29 @@ class _RecordCardState extends State<RecordCard> {
                     color: Colors.white,
                   ),
                 ),
+              subtitle: Row(
+                children: [
+                  Text(
+                    'Date: ',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15,
+                        fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    width: 3,
+                  ),
+                  Text(
+                    Util.getFormattedDate(DateTime.tryParse(widget.record.date ?? ''),
+                        DateFormat('dd MMM, yyyy')) ??
+                        '',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 15,
+                    ),
+                  )
+                ],
+              ),
                 trailing:
                     IconButton(
                       icon: Icon(
@@ -112,6 +135,7 @@ class _RecordCardState extends State<RecordCard> {
                       },
                     ),
             ),
+            if(!_expanded) SizedBox(height: 10,),
             if (_expanded) ..._buildAdditionalInfo(),
           ],
         ),
@@ -122,18 +146,12 @@ class _RecordCardState extends State<RecordCard> {
   List<Widget> _buildAdditionalInfo() {
     return [
       Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(10.0),
         child: Divider(
           height: 1, // Height of the divider
           thickness: 1, // Thickness of the divider
           color: Colors.white,// Right indent
         ),
-      ),
-      _buildInfoItem(
-        'Date:',
-        Util.getFormattedDate(DateTime.tryParse(widget.record.date ?? ''),
-                DateFormat('dd MMM, yyyy')) ??
-            '',
       ),
       _buildInfoItem('Diagnosis:', widget.record.diagnosis),
       _buildInfoItem('Nurse:', widget.record.nurse),

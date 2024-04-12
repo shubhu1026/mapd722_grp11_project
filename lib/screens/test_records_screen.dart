@@ -134,16 +134,6 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
               children: [
                 Row(
                   children: [
-                    Text(
-                      "Normal",
-                      style: TextStyle(
-                          color: Constants.primaryColor,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600),
-                    ),
-                    SizedBox(
-                      width: 2,
-                    ),
                     Container(
                       width: 20,
                       height: 20,
@@ -152,17 +142,17 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
                           color: Constants.primaryColor),
                     ),
                     SizedBox(
-                      width: 5,
+                      width: 2,
                     ),
                     Text(
-                      "Critical",
+                      "Normal",
                       style: TextStyle(
-                          color: Colors.red,
+                          color: Constants.primaryColor,
                           fontSize: 16,
                           fontWeight: FontWeight.w600),
                     ),
                     SizedBox(
-                      width: 2,
+                      width: 10,
                     ),
                     Container(
                       width: 20,
@@ -171,6 +161,16 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
                         shape: BoxShape.circle,
                         color: Colors.red,
                       ),
+                    ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    Text(
+                      "Critical",
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600),
                     ),
                   ],
                 ),
@@ -199,17 +199,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: CustomTextField(
-                labelText: "Search",
-                prefixIcon: Icons.search,
-                controller: _searchController,
-              onChanged: (value) {
-                setState(() {});
-              },
-            ),
-          ),
+          SizedBox(height: 10,),
           Expanded(
             child: Container(
               color: Color.fromARGB(255, 255, 255, 255),
