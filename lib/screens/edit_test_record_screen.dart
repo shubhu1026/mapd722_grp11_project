@@ -10,6 +10,7 @@ import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../providers/patients_provider.dart';
+import '../util.dart';
 
 class EditPatientRecordScreen extends StatefulWidget {
   final Record record;
@@ -46,12 +47,13 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     _diagnosisController.text = widget.record.diagnosis;
     _nurseController.text = widget.record.nurse;
 
-    DateTime parsedDate = DateTime.parse(widget.record.date);
-    String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+    DateTime? parsedDate = DateTime.tryParse(widget.record.date ?? '');
+    String formattedDate = Util.getFormattedDate(parsedDate, DateFormat('yyyy-MM-dd')) ?? '';
     _testDateController.text = formattedDate;
 
+
     DateTime parsedTime = DateTime.parse(widget.record.testTime);
-    String formattedTime = DateFormat('HH mm').format(parsedTime);
+    String formattedTime = DateFormat('HH:mm').format(parsedTime);
     _testTimeController.text = formattedTime;
     _categoryController.text = widget.record.category;
     _conditionController.text = widget.record.condition;
@@ -210,39 +212,27 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     if (pickedTime != null) {
       // Get the current date
       final currentDate = DateTime.now();
+      final date = DateFormat('yyyy-MM-dd').parse(_testDateController.text);
 
       // Create a new DateTime object using the selected time and the current date
       final selectedDateTime = DateTime(
-        currentDate.year,
-        currentDate.month,
-        currentDate.day,
+        date.year,
+        date.month,
+        date.day,
         pickedTime.hour,
         pickedTime.minute,
       );
 
       // Format the selected time
       final formattedTime = DateFormat('HH:mm').format(selectedDateTime);
+      final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(selectedDateTime);
 
       setState(() {
         _testTimeController.text = formattedTime;
-        _updatedRecord.testTime = formattedTime;
+        _updatedRecord.testTime = formattedDateTime;
       });
     }
   }
-
-  // Future<void> _selectDate(BuildContext context) async {
-  //   final DateTime? pickedDate = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(1900),
-  //     lastDate: DateTime.now(),
-  //   );
-  //
-  //   if (pickedDate != null && pickedDate != _updatedRecord.date) {
-  //     _testDateController.text = pickedDate.toLocal().toString().split(' ')[0];
-  //     _updatedRecord.date = _testDateController.text;
-  //   }
-  // }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -255,14 +245,16 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     if (pickedDate != null && pickedDate != _updatedRecord.date) {
       // Format the picked date
       final formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+      final formattedDateTime = DateFormat('yyyy-MM-dd HH:mm').format(pickedDate);
 
       // Update the text controller with formatted date
       _testDateController.text = formattedDate;
 
-      // Update the record's date with DateTime object
-      _updatedRecord.date = formattedDate;
+      // Update the record's date with formatted date string
+      _updatedRecord.date = formattedDateTime;
     }
   }
+
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
@@ -275,22 +267,6 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
 
   Future<void> _updateRecord() async {
     try {
-      final testTime = DateFormat('HH:mm').parse(_updatedRecord.testTime);
-      final testDate = DateFormat('yyyy-MM-dd').parse(_updatedRecord.date);
-
-      // Combine the current date with the parsed time
-      final updatedDateTime = DateTime(
-        testDate.year,
-        testDate.month,
-        testDate.day,
-        testTime.hour,
-        testTime.minute,
-      );
-
-      // Update the test time in the updated record
-      _updatedRecord.testTime = DateFormat('yyyy-MM-dd HH:mm').format(updatedDateTime);
-      _updatedRecord.date = DateFormat('yyyy-MM-dd HH:mm').format(updatedDateTime);
-
       final response = await http.put(
         Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientId}/medicalTests/${widget.record.id}'), // Replace with your API endpoint
         headers: <String, String>{
