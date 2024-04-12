@@ -80,6 +80,7 @@ class _WhiteBGTextFieldState extends State<WhiteBGTextField> {
             setState(() {
               _isFocused = false;
             });
+            FocusScope.of(context).unfocus();
           },
         ),
       ),

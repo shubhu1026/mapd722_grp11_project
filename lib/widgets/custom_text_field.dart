@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../constants/constants.dart';
 
-class CustomTextField extends StatelessWidget {
+class CustomTextField extends StatefulWidget {
   final String labelText;
   final IconData prefixIcon;
   final TextEditingController controller;
@@ -11,9 +11,10 @@ class CustomTextField extends StatelessWidget {
   final bool readOnly;
   final void Function(String?)? onSaved;
   final void Function(String)? onChanged; // Added onChanged callback
+  final void Function()? onEditingComplete;
 
   const CustomTextField({
-    super.key,
+    Key? key, // Added Key parameter
     required this.labelText,
     required this.prefixIcon,
     required this.controller,
@@ -23,35 +24,56 @@ class CustomTextField extends StatelessWidget {
     this.readOnly = false,
     this.onSaved,
     this.onChanged,
-  });
+    this.onEditingComplete,
+  }) : super(key: key);
+
+  @override
+  _CustomTextFieldState createState() => _CustomTextFieldState();
+}
+
+class _CustomTextFieldState extends State<CustomTextField> {
+  bool _isFocused = false;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap,
+      onTap: widget.onTap,
       child: AbsorbPointer(
-        absorbing: readOnly,
+        absorbing: widget.readOnly,
         child: TextFormField(
           decoration: InputDecoration(
-            labelText: labelText,
-            prefixIcon: Icon(prefixIcon, color: Constants.primaryColor),
+            labelText: widget.labelText,
+            prefixIcon: Icon(widget.prefixIcon, color: Constants.primaryColor),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(20.0),
             ),
           ),
-          controller: controller,
-          obscureText: isPassword,
-          keyboardType: keyboardType,
-          readOnly: readOnly,
+          controller: widget.controller,
+          obscureText: widget.isPassword,
+          keyboardType: widget.keyboardType,
+          readOnly: widget.readOnly,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Please enter $labelText';
+              return 'Please enter ${widget.labelText}';
             }
             return null;
           },
-          onChanged: onChanged,
+          onChanged: widget.onChanged,
           // Pass onChanged callback to TextFormField
-          onSaved: onSaved,
+          onSaved: widget.onSaved,
+          onEditingComplete: widget.onEditingComplete,
+          onTap: () {
+            setState(() {
+              _isFocused = true;
+            });
+            widget.onTap?.call();
+          },
+          onFieldSubmitted: (_) {
+            setState(() {
+              _isFocused = false;
+            });
+            FocusScope.of(context).unfocus();
+          },
         ),
       ),
     );

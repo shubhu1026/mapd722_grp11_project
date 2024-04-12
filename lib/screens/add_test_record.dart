@@ -13,8 +13,7 @@ import '../providers/patient_records_provider.dart';
 class AddPatientRecordScreen extends StatefulWidget {
   final String? patientID;
 
-  const AddPatientRecordScreen(
-      {Key? key, required this.patientID})
+  const AddPatientRecordScreen({Key? key, required this.patientID})
       : super(key: key);
 
   @override
@@ -38,10 +37,8 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
 
   final TextEditingController _diagnosisController = TextEditingController();
   final TextEditingController _nurseController = TextEditingController();
-  final TextEditingController _testDateController =
-      TextEditingController();
-  final TextEditingController _testTimeController =
-      TextEditingController();
+  final TextEditingController _testDateController = TextEditingController();
+  final TextEditingController _testTimeController = TextEditingController();
   final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _conditionController = TextEditingController();
   final TextEditingController _readingsController = TextEditingController();
@@ -58,8 +55,15 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
   final Map<String, Map<String, double>> _conditionThresholds = {
     'Blood Pressure Test': {'low': 90, 'high': 140},
     'Blood Sugar Test': {'low': 80, 'high': 180},
-    'Cholesterol Test': {'high': 240},
+    'Cholesterol Test': {'low': 50, 'high': 180},
     'Complete Blood Count (CBC)': {'low': 4.5, 'high': 10}
+  };
+
+  final Map<String, Map<String, double>> _inputThresholds = {
+    'Blood Pressure Test': {'min': 50, 'max': 220},
+    'Blood Sugar Test': {'min': 30, 'max': 450},
+    'Cholesterol Test': {'min': 40, 'max': 240},
+    'Complete Blood Count (CBC)': {'min': 3.0, 'max': 14.2},
   };
 
   @override
@@ -96,10 +100,16 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                     ),
                     Column(
                       children: [
+                        const Text(
+                          'Test Details',
+                          style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
+                          textAlign: TextAlign.center,
+                        ),
+                        const SizedBox(height: 10),
                         Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(20.0),
-                            border: Border.all(color: Colors.grey),
+                            border: Border.all(color: Colors.black, width: 0.65),
                           ),
                           child: DropdownButtonFormField<String>(
                             value: _selectedTestType,
@@ -112,8 +122,8 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                               return DropdownMenuItem<String>(
                                 value: testType,
                                 child: Padding(
-                                  padding:
-                                      const EdgeInsets.symmetric(horizontal: 12.0),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12.0),
                                   child: Text(
                                     testType,
                                     style: const TextStyle(color: Colors.black),
@@ -124,7 +134,7 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                             decoration: const InputDecoration(
                               border: InputBorder.none,
                               labelText: 'Test Type',
-                              prefixIcon: Icon(Icons.list, color: Colors.grey),
+                              prefixIcon: Icon(Icons.list, color: Constants.primaryColor),
                             ),
                             style: const TextStyle(color: Colors.black),
                           ),
@@ -175,6 +185,9 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                           keyboardType: TextInputType.number,
                           onChanged: (value) {
                             _updateCondition(value ?? '0');
+                          },
+                          onEditingComplete: () {
+                            _limitValues(_readingsController.text ?? '0');
                           }, // Add onChanged here
                         ),
                         const SizedBox(height: 10),
@@ -186,6 +199,7 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                         ),
                       ],
                     ),
+                    SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: _submitForm,
                       style: ButtonStyle(
@@ -202,7 +216,8 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                         padding: const EdgeInsets.all(15.0),
                         child: Text(
                           'Add Test'.toUpperCase(),
-                          style: const TextStyle(color: Colors.white, fontSize: 18),
+                          style: const TextStyle(
+                              color: Colors.white, fontSize: 18),
                         ),
                       ),
                     ),
@@ -283,7 +298,8 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
           print('New record ID: $newRecordId');
 
           await provider.updatePatientRecords(widget.patientID!);
-          Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
+          Provider.of<PatientsProvider>(context, listen: false)
+              .updatePatientLists();
           // Close the screen or navigate back
           Navigator.pop(context);
         } else if (response.statusCode == 307) {
@@ -303,7 +319,8 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
           if (redirectedResponse.statusCode == 200 ||
               redirectedResponse.statusCode == 201) {
             await provider.updatePatientRecords(widget.patientID!);
-            Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
+            Provider.of<PatientsProvider>(context, listen: false)
+                .updatePatientLists();
           }
         } else {
           // Print error message only if there's an error response from the server
@@ -312,6 +329,26 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
       } catch (error) {
         // Print error message if an exception occurs
         print('Error adding new test: $error');
+      }
+    }
+  }
+
+  void _limitValues(String value) {
+    if (value.isNotEmpty && _selectedTestType.isNotEmpty) {
+      final thresholds = _inputThresholds[_selectedTestType];
+      if (thresholds != null) {
+        final double reading = double.tryParse(value) ?? 0.0;
+        if (reading > thresholds['max']!) {
+          setState(() {
+            _readingsController.text = thresholds['max'].toString();
+            _record.readings = _readingsController.text;
+          });
+        } else if (reading < thresholds['min']!) {
+          setState(() {
+            _readingsController.text = thresholds['min'].toString();
+            _record.readings = _readingsController.text;
+          });
+        }
       }
     }
   }

@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => PatientRecordsProvider()),
       ],
       child: MaterialApp(
-        title: 'Flutter Demo',
+        title: 'MediCare',
         themeMode: ThemeMode.light,
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),

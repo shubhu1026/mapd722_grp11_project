@@ -39,6 +39,15 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
   final TextEditingController _conditionController = TextEditingController();
   final TextEditingController _readingsController = TextEditingController();
 
+  final List<String> _testTypes = [
+    'Blood Pressure Test',
+    'Blood Sugar Test',
+    'Cholesterol Test',
+    'Complete Blood Count (CBC)',
+  ];
+
+  String _selectedTestType = '';
+
   @override
   void initState() {
     super.initState();
@@ -46,6 +55,8 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     _testTypeController.text = widget.record.testType;
     _diagnosisController.text = widget.record.diagnosis;
     _nurseController.text = widget.record.nurse;
+
+    _selectedTestType = widget.record.testType;
 
     DateTime? parsedDate = DateTime.tryParse(widget.record.date ?? '');
     String formattedDate = Util.getFormattedDate(parsedDate, DateFormat('yyyy-MM-dd')) ?? '';
@@ -62,6 +73,20 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     // Initialize updated record with existing record data
     _updatedRecord = widget.record;
   }
+
+  final Map<String, Map<String, double>> _conditionThresholds = {
+    'Blood Pressure Test': {'low': 90, 'high': 140},
+    'Blood Sugar Test': {'low': 80, 'high': 180},
+    'Cholesterol Test': {'low': 50, 'high': 180},
+    'Complete Blood Count (CBC)': {'low': 4.5, 'high': 10}
+  };
+
+  final Map<String, Map<String, double>> _inputThresholds = {
+    'Blood Pressure Test': {'min': 50, 'max': 220},
+    'Blood Sugar Test': {'min': 30, 'max': 450},
+    'Cholesterol Test': {'min': 40, 'max': 240},
+    'Complete Blood Count (CBC)': {'min': 3.0, 'max': 14.2},
+  };
 
   @override
   Widget build(BuildContext context) {
@@ -89,15 +114,39 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                CustomTextField(
-                  labelText: 'Test Type',
-                  prefixIcon: Icons.list,
-                  controller: _testTypeController,
-                  onChanged: (value) {
-                    setState(() {
-                      _updatedRecord.testType = value;
-                    });
-                  },
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20.0),
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: DropdownButtonFormField<String>(
+                    value: _selectedTestType,
+                    onChanged: (newValue) {
+                      setState(() {
+                        _selectedTestType = newValue!;
+                        _updatedRecord.testType= _selectedTestType;
+                      });
+                    },
+                    items: _testTypes.map((String testType) {
+                      return DropdownMenuItem<String>(
+                        value: testType,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12.0),
+                          child: Text(
+                            testType,
+                            style: const TextStyle(color: Colors.black),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                    decoration: const InputDecoration(
+                      border: InputBorder.none,
+                      labelText: 'Test Type',
+                      prefixIcon: Icon(Icons.list, color: Constants.primaryColor),
+                    ),
+                    style: const TextStyle(color: Colors.black),
+                  ),
                 ),
                 const SizedBox(height: 10),
                 CustomTextField(
@@ -159,10 +208,11 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                   controller: _readingsController,
                   keyboardType: TextInputType.number,
                   onChanged: (value) {
-                    setState(() {
-                      _updatedRecord.readings = value;
-                    });
+                    _updateCondition(value ?? '0');
                   },
+                  onEditingComplete: () {
+                    _limitValues(_readingsController.text ?? '0');
+                  }, // Add onChanged here
                 ),
                 const SizedBox(height: 10,),
                 CustomTextField(
@@ -231,6 +281,46 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
         _testTimeController.text = formattedTime;
         _updatedRecord.testTime = formattedDateTime;
       });
+    }
+  }
+
+  void _limitValues(String value) {
+    if (value.isNotEmpty && _testTypeController.text.isNotEmpty) {
+      final thresholds = _inputThresholds[_testTypeController.text];
+      if (thresholds != null) {
+        final double reading = double.tryParse(value) ?? 0.0;
+        if (reading > thresholds['max']!) {
+          setState(() {
+            _readingsController.text = thresholds['max'].toString();
+            _updatedRecord.readings = _readingsController.text;
+          });
+        } else if (reading < thresholds['min']!) {
+          setState(() {
+            _readingsController.text = thresholds['min'].toString();
+            _updatedRecord.readings = _readingsController.text;
+          });
+        }
+      }
+    }
+  }
+  void _updateCondition(String value) {
+    if (value.isNotEmpty && _selectedTestType.isNotEmpty) {
+      final thresholds = _conditionThresholds[_selectedTestType];
+      if (thresholds != null) {
+        final double reading = double.tryParse(value) ?? 0.0;
+        if (reading >= (thresholds['low'] ?? double.negativeInfinity) &&
+            reading <= (thresholds['high'] ?? double.infinity)) {
+          setState(() {
+            _conditionController.text = 'Normal';
+            _updatedRecord.condition = 'Normal';
+          });
+        } else {
+          setState(() {
+            _conditionController.text = 'Critical';
+            _updatedRecord.condition = 'Critical';
+          });
+        }
+      }
     }
   }
 
