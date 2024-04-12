@@ -38,7 +38,7 @@ class HomeScreen extends StatelessWidget {
         ],
       ),
       bottomSheet: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           color: Constants.primaryColor,
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
@@ -79,7 +79,7 @@ class HomeScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => PatientsScreen()),
                   );
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -105,20 +105,6 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class NextScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Next Screen'),
-      ),
-      body: Center(
-        child: Text('This is the next screen.'),
       ),
     );
   }

@@ -1,8 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:mapd722_mobile_web_development/providers/patients_provider.dart';
-import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 import 'package:mapd722_mobile_web_development/widgets/white_bg_text_field.dart';
 import 'package:provider/provider.dart';
 import 'package:mapd722_mobile_web_development/widgets/patient_card.dart';
@@ -12,19 +12,23 @@ import '../screens/patients_screen.dart';
 import 'critical_patient_card.dart';
 
 class PatientsTab extends StatelessWidget {
+  PatientsTab({super.key});
+
+  final TextEditingController _searchController = TextEditingController();
+
   Future<void> _showDeleteAllDialogBox(BuildContext context) async {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete all patients?'),
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete all patients?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
               },
-              child: Text(
+              child: const Text(
                 'Cancel',
                 style: TextStyle(
                   color: Constants.primaryColor,
@@ -35,7 +39,7 @@ class PatientsTab extends StatelessWidget {
               onPressed: () {
                 _deleteAllPatients(context);
               },
-              child: Text(
+              child: const Text(
                 'Delete',
                 style: TextStyle(
                   color: Colors.red,
@@ -60,14 +64,14 @@ class PatientsTab extends StatelessWidget {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Delete Successful'),
-              content: Text('Patient deleted successfully.'),
+              title: const Text('Delete Successful'),
+              content: const Text('Patient deleted successfully.'),
               actions: [
                 TextButton(
                   onPressed: () {
                     Navigator.popUntil(context, ModalRoute.withName('/'));
                   },
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -91,8 +95,8 @@ class PatientsTab extends StatelessWidget {
             context: context,
             builder: (BuildContext context) {
               return AlertDialog(
-                title: Text('Delete Successful'),
-                content: Text('Patient deleted successfully.'),
+                title: const Text('Delete Successful'),
+                content: const Text('Patient deleted successfully.'),
                 actions: [
                   TextButton(
                     onPressed: () {
@@ -100,10 +104,10 @@ class PatientsTab extends StatelessWidget {
                       Navigator.pushReplacement(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => PatientsScreen()),
+                            builder: (context) => const PatientsScreen()),
                       );
                     },
-                    child: Text('OK'),
+                    child: const Text('OK'),
                   ),
                 ],
               );
@@ -114,11 +118,11 @@ class PatientsTab extends StatelessWidget {
         throw Exception('Failed to delete patient');
       }
     } catch (error) {
-      print('Error: $error');
+      if (kDebugMode) {
+        print('Error: $error');
+      }
     }
   }
-
-  TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -139,13 +143,13 @@ class PatientsTab extends StatelessWidget {
                     },
                   ),
                 ),
-                SizedBox(width: 10),
+                const SizedBox(width: 10),
                 // Add spacing between text field and button
                 SizedBox(
                   height: 60,
                   child: ElevatedButton.icon(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    label: Text(
+                    icon: const Icon(Icons.delete, color: Colors.red),
+                    label: const Text(
                       "Delete All",
                       style: TextStyle(
                         fontSize: 16,
@@ -175,12 +179,12 @@ class PatientsTab extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Expanded(
               child: provider.filteredList.isEmpty
-                  ? Center(child: Text('No patients found.'))
+                  ? const Center(child: Text('No patients found.'))
                   : ListView.builder(
                       itemCount: provider.filteredList.length,
                       itemBuilder: (context, index) {

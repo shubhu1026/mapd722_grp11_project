@@ -1,9 +1,5 @@
-import 'dart:async';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/widgets/record_card.dart';
-import 'package:mapd722_mobile_web_development/models/record.dart';
 import 'package:mapd722_mobile_web_development/widgets/white_bg_text_field.dart';
 import '../constants/constants.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +8,7 @@ import '../providers/patient_records_provider.dart';
 class RecordsTab extends StatefulWidget {
   final String? patientID;
 
-  const RecordsTab({Key? key, required this.patientID}) : super(key: key);
+  const RecordsTab({super.key, required this.patientID});
 
   @override
   _RecordsTabState createState() => _RecordsTabState();
@@ -20,7 +16,7 @@ class RecordsTab extends StatefulWidget {
 
 class _RecordsTabState extends State<RecordsTab> {
 
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
@@ -48,7 +44,7 @@ class _RecordsTabState extends State<RecordsTab> {
               ),
             ),
             if (provider.isLoading) ...[
-              Center(
+              const Center(
                 child: CircularProgressIndicator(color: Constants.primaryColor),
               ),
             ] else if (provider.error != null) ...[
@@ -58,7 +54,7 @@ class _RecordsTabState extends State<RecordsTab> {
             ] else if (provider.filteredRecords.isEmpty && _searchController.text.isNotEmpty) ...[
               // Check if isLoading is false and patientRecords is empty
               if (!provider.isLoading)
-                Center(
+                const Center(
                   child: Text('No records found.'),
                 ),
             ] else ...[

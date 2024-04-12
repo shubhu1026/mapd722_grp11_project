@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapd722_mobile_web_development/models/patient.dart';
@@ -13,6 +14,8 @@ import '../constants/constants.dart';
 import '../widgets/patients_tab.dart';
 
 class AddPatientScreen extends StatefulWidget {
+  const AddPatientScreen({super.key});
+
   @override
   _AddPatientScreenState createState() => _AddPatientScreenState();
 }
@@ -27,13 +30,13 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
 
   Gender? _selectedGender;
 
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _dobController = TextEditingController();
-  TextEditingController _doctorController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _doctorController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   @override
   void initState() {
@@ -77,12 +80,12 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
+                  const Text(
                     'Patient Details',
                     style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center,
                   ),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 20),
                   Column(
                     children: [
                       CustomTextField(
@@ -91,21 +94,21 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                         controller: _firstNameController,
                         onSaved: (value) => _patient.firstName = value!,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       CustomTextField(
                         labelText: 'Last Name',
                         prefixIcon: Icons.person,
                         controller: _lastNameController,
                         onSaved: (value) => _patient.lastName = value!,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       CustomTextField(
                         labelText: 'Address',
                         prefixIcon: Icons.pin_drop,
                         controller: _addressController,
                         onSaved: (value) => _patient.address = value!,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       CustomTextField(
                         labelText: 'Date of Birth',
                         prefixIcon: Icons.calendar_month,
@@ -116,21 +119,21 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                         readOnly: true,
                         onSaved: (value) => _patient.dateOfBirth = value!,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       CustomTextField(
                         labelText: 'Doctor\'s Name',
                         prefixIcon: Icons.medical_information,
                         controller: _doctorController,
                         onSaved: (value) => _patient.doctor = value!,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       CustomTextField(
                         labelText: 'Email',
                         prefixIcon: Icons.email,
                         controller: _emailController,
                         onSaved: (value) => _patient.email = value!,
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(20.0),
@@ -140,8 +143,8 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                           padding: const EdgeInsets.all(8.0),
                           child: Row(
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(right: 8.0),
+                              const Padding(
+                                padding: EdgeInsets.only(right: 8.0),
                                 child: Icon(
                                   Icons.person,
                                   color: Constants.primaryColor,
@@ -155,12 +158,12 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                                 onChanged: (Gender? value) {
                                   setState(() {
                                     _selectedGender = value;
-                                    _patient.gender = 'Male'; // Update the gender property
+                                    _patient.gender = 'Male';
                                   });
                                 },
                                 activeColor: Constants.primaryColor,
                               ),
-                              Text('Male'),
+                              const Text('Male'),
                               Radio(
                                 value: Gender.female,
                                 groupValue: _selectedGender,
@@ -168,17 +171,17 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                                   setState(() {
                                     _selectedGender = value;
                                     _patient.gender =
-                                    'Female'; // Update the gender property
+                                    'Female';
                                   });
                                 },
                                 activeColor: Constants.primaryColor,
                               ),
-                              Text('Female'),
+                              const Text('Female'),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       CustomTextField(
                         labelText: 'Phone No.',
                         prefixIcon: Icons.phone,
@@ -187,16 +190,9 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 30),
+                  const SizedBox(height: 30),
                   ElevatedButton(
                     onPressed: _submitForm,
-                    child: Padding(
-                      padding: const EdgeInsets.all(15.0),
-                      child: Text(
-                        'Submit'.toUpperCase(),
-                        style: TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                    ),
                     style: ButtonStyle(
                       backgroundColor:
                       MaterialStateProperty.all<Color>(Constants.primaryColor),
@@ -204,6 +200,13 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(20.0),
                         ),
+                      ),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(15.0),
+                      child: Text(
+                        'Submit'.toUpperCase(),
+                        style: const TextStyle(color: Colors.white, fontSize: 18),
                       ),
                     ),
                   ),
@@ -270,7 +273,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
               'lastName': _lastNameController.text,
               'address': _addressController.text,
               'dateOfBirth': _dobController.text,
-              'gender': 'Male', // Or 'Female', based on your logic
+              'gender': _selectedGender == Gender.male ? 'Male' : 'Female',
               'email': _emailController.text,
               'contactNumber': _phoneController.text,
               'doctor': _doctorController.text,
@@ -285,7 +288,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
 
           // Show success message to the user
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Patient added successfully'),
             ),
           );
@@ -297,11 +300,13 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
           ); // Go to patients screen
         } else {
           // Handle the response as usual
-          print('Response status code: ${response.statusCode}');
-          print('Response body: ${response.body}');
+          if (kDebugMode) {
+            print('Response status code: ${response.statusCode}');
+            print('Response body: ${response.body}');
+          }
           // Show success message to the user
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Patient added successfully'),
             ),
           );
@@ -313,7 +318,9 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
           );// Go to patients screen
         }
       } catch (e) {
-        print('Error: $e');
+        if (kDebugMode) {
+          print('Error: $e');
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('An error occurred while adding the patient: $e'),

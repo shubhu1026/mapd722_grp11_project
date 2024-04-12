@@ -4,6 +4,8 @@ import 'package:mapd722_mobile_web_development/screens/patients_screen.dart';
 import '../constants/constants.dart';
 
 class CustomDrawer extends StatelessWidget {
+  const CustomDrawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -11,13 +13,7 @@ class CustomDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            child: Center(
-              child: Image.asset(
-                "assets/images/MediCare.png",
-                height: 100,
-              ),
-            ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               border: Border(
                 bottom: BorderSide(
                   color: Constants.primaryColor, // Using primary color
@@ -25,9 +21,15 @@ class CustomDrawer extends StatelessWidget {
                 ),
               ),
             ),
+            child: Center(
+              child: Image.asset(
+                "assets/images/MediCare.png",
+                height: 100,
+              ),
+            ),
           ),
           ListTile(
-            title: Text(
+            title: const Text(
               'Home',
               style: TextStyle(
                 color: Constants.primaryColor, // Using primary color
@@ -42,7 +44,7 @@ class CustomDrawer extends StatelessWidget {
             },
           ),
           ListTile(
-            title: Text(
+            title: const Text(
               "Patient's List",
               style: TextStyle(
                 color: Constants.primaryColor, // Using primary color
@@ -52,7 +54,7 @@ class CustomDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => PatientsScreen()),
+                MaterialPageRoute(builder: (context) => const PatientsScreen()),
               );
             },
           ),

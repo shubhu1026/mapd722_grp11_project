@@ -36,17 +36,17 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
     readings: '',
   );
 
-  TextEditingController _diagnosisController = TextEditingController();
-  TextEditingController _nurseController = TextEditingController();
-  TextEditingController _testDateController =
+  final TextEditingController _diagnosisController = TextEditingController();
+  final TextEditingController _nurseController = TextEditingController();
+  final TextEditingController _testDateController =
       TextEditingController();
-  TextEditingController _testTimeController =
+  final TextEditingController _testTimeController =
       TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
-  TextEditingController _conditionController = TextEditingController();
-  TextEditingController _readingsController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _conditionController = TextEditingController();
+  final TextEditingController _readingsController = TextEditingController();
 
-  List<String> _testTypes = [
+  final List<String> _testTypes = [
     'Blood Pressure Test',
     'Blood Sugar Test',
     'Cholesterol Test',
@@ -91,7 +91,7 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 1,
                     ),
                     Column(
@@ -113,35 +113,35 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                                 value: testType,
                                 child: Padding(
                                   padding:
-                                      EdgeInsets.symmetric(horizontal: 12.0),
+                                      const EdgeInsets.symmetric(horizontal: 12.0),
                                   child: Text(
                                     testType,
-                                    style: TextStyle(color: Colors.black),
+                                    style: const TextStyle(color: Colors.black),
                                   ),
                                 ),
                               );
                             }).toList(),
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               border: InputBorder.none,
                               labelText: 'Test Type',
                               prefixIcon: Icon(Icons.list, color: Colors.grey),
                             ),
-                            style: TextStyle(color: Colors.black),
+                            style: const TextStyle(color: Colors.black),
                           ),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomTextField(
                           labelText: 'Diagnosis',
                           prefixIcon: Icons.health_and_safety,
                           controller: _diagnosisController,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomTextField(
                           labelText: 'Nurse',
                           prefixIcon: Icons.woman_rounded,
                           controller: _nurseController,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomTextField(
                           labelText: 'Test Date',
                           prefixIcon: Icons.calendar_today,
@@ -151,7 +151,7 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                           },
                           readOnly: true,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomTextField(
                           labelText: 'Test Time',
                           prefixIcon: Icons.access_time,
@@ -161,13 +161,13 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                           },
                           readOnly: true,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomTextField(
                           labelText: 'Category',
                           prefixIcon: Icons.medical_information,
                           controller: _categoryController,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomTextField(
                           labelText: 'Readings',
                           prefixIcon: Icons.numbers,
@@ -177,7 +177,7 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                             _updateCondition(value ?? '0');
                           }, // Add onChanged here
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomTextField(
                           labelText: 'Condition',
                           prefixIcon: Icons.medical_services,
@@ -188,13 +188,6 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                     ),
                     ElevatedButton(
                       onPressed: _submitForm,
-                      child: Padding(
-                        padding: const EdgeInsets.all(15.0),
-                        child: Text(
-                          'Add Test'.toUpperCase(),
-                          style: TextStyle(color: Colors.white, fontSize: 18),
-                        ),
-                      ),
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all<Color>(
                             Constants.primaryColor),
@@ -203,6 +196,13 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20.0),
                           ),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(15.0),
+                        child: Text(
+                          'Add Test'.toUpperCase(),
+                          style: const TextStyle(color: Colors.white, fontSize: 18),
                         ),
                       ),
                     ),

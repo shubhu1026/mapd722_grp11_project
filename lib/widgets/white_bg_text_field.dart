@@ -12,7 +12,7 @@ class WhiteBGTextField extends StatefulWidget {
   final void Function(String?)? onSaved;
   final void Function(String)? onChanged;
 
-  WhiteBGTextField({
+  const WhiteBGTextField({super.key,
     required this.labelText,
     required this.prefixIcon,
     required this.controller,
@@ -50,11 +50,11 @@ class _WhiteBGTextFieldState extends State<WhiteBGTextField> {
             filled: true,
             fillColor: Colors.white,
             enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
+              borderSide: const BorderSide(color: Colors.black),
               borderRadius: BorderRadius.circular(20.0),
             ),
             focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide(color: Colors.black),
+              borderSide: const BorderSide(color: Colors.black),
               borderRadius: BorderRadius.circular(20.0),
             ),
           ),

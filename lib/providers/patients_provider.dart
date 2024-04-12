@@ -6,14 +6,13 @@ import 'package:mapd722_mobile_web_development/models/patient.dart';
 import 'package:mapd722_mobile_web_development/constants/constants.dart';
 
 class PatientsProvider extends ChangeNotifier {
-  late Future<List<Patient>> _patients;
   List<Patient> _patientList = [];
-  List<Patient> _filteredList = []; // New filtered list
+  List<Patient> _filteredList = [];
   bool _isLoading = false;
   String? _error;
 
   List<Patient> get patientList => _patientList;
-  List<Patient> get filteredList => _filteredList; // Getter for filtered list
+  List<Patient> get filteredList => _filteredList;
   bool get isLoading => _isLoading;
   String? get error => _error;
 
@@ -22,12 +21,11 @@ class PatientsProvider extends ChangeNotifier {
     _fetchCriticalPatients();
   }
 
-  late Future<List<Patient>> _criticalPatients;
   List<Patient> _criticalPatientList = [];
-  List<Patient> _filteredCriticalList = []; // New filtered list for critical patients
+  List<Patient> _filteredCriticalList = [];
 
   List<Patient> get criticalPatientList => _criticalPatientList;
-  List<Patient> get filteredCriticalList => _filteredCriticalList; // Getter for filtered critical list
+  List<Patient> get filteredCriticalList => _filteredCriticalList;
 
   Future<void> _fetchCriticalPatients() async {
     _isLoading = true;
@@ -39,7 +37,7 @@ class PatientsProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         _criticalPatientList = data.map((json) => Patient.fromJson(json)).toList();
-        _filteredCriticalList = List.from(_criticalPatientList); // Initialize filtered critical list
+        _filteredCriticalList = List.from(_criticalPatientList);
         _error = null;
       } else {
         _error = 'Failed to load critical patients';
@@ -62,7 +60,7 @@ class PatientsProvider extends ChangeNotifier {
       if (response.statusCode == 200) {
         final List<dynamic> data = json.decode(response.body);
         _patientList = data.map((json) => Patient.fromJson(json)).toList();
-        _filteredList = List.from(_patientList); // Initialize filtered list
+        _filteredList = List.from(_patientList);
         _error = null;
       } else {
         _error = 'Failed to load patients';
@@ -83,7 +81,7 @@ class PatientsProvider extends ChangeNotifier {
 
   void searchPatients(String query) {
     if (query.isEmpty) {
-      _filteredList = List.from(_patientList); // Reset filtered list
+      _filteredList = List.from(_patientList);
       notifyListeners();
       return;
     }
@@ -97,7 +95,7 @@ class PatientsProvider extends ChangeNotifier {
 
   void searchCriticalPatients(String query) {
     if (query.isEmpty) {
-      _filteredCriticalList = List.from(_criticalPatientList); // Reset filtered critical list
+      _filteredCriticalList = List.from(_criticalPatientList);
       notifyListeners();
       return;
     }

@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:mapd722_mobile_web_development/models/record.dart';
 import 'package:mapd722_mobile_web_development/providers/patient_records_provider.dart';
 import 'package:mapd722_mobile_web_development/screens/edit_test_record_screen.dart';
-import 'package:mapd722_mobile_web_development/screens/test_records_screen.dart';
 import 'package:mapd722_mobile_web_development/constants/constants.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +14,7 @@ class RecordCard extends StatefulWidget {
   final Record record;
   final String? patientId;
 
-  const RecordCard({
+  const RecordCard({super.key,
     required this.record,
     required this.patientId,
   });
@@ -38,7 +37,7 @@ class _RecordCardState extends State<RecordCard> {
       );
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Test record deleted successfully'),
           ),
         );
@@ -54,7 +53,7 @@ class _RecordCardState extends State<RecordCard> {
     } catch (error) {
       print('Error deleting test record: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to delete test record'),
         ),
       );
@@ -77,7 +76,7 @@ class _RecordCardState extends State<RecordCard> {
       },
       child: Card(
         elevation: 3,
-        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         color: cardColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10.0),
@@ -87,14 +86,14 @@ class _RecordCardState extends State<RecordCard> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ListTile(
-                leading: Icon(
+                leading: const Icon(
                   Icons.file_copy,
                   color: Colors.white,
                   size: 30,
                 ),
                 title: Text(
-                  '${widget.record.testType}',
-                  style: TextStyle(
+                  widget.record.testType,
+                  style: const TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 20,
                     color: Colors.white,
@@ -102,21 +101,21 @@ class _RecordCardState extends State<RecordCard> {
                 ),
               subtitle: Row(
                 children: [
-                  Text(
+                  const Text(
                     'Date: ',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.bold),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 3,
                   ),
                   Text(
                     Util.getFormattedDate(DateTime.tryParse(widget.record.date ?? ''),
                         DateFormat('dd MMM, yyyy')) ??
                         '',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 15,
                     ),
@@ -135,7 +134,7 @@ class _RecordCardState extends State<RecordCard> {
                       },
                     ),
             ),
-            if(!_expanded) SizedBox(height: 10,),
+            if(!_expanded) const SizedBox(height: 10,),
             if (_expanded) ..._buildAdditionalInfo(),
           ],
         ),
@@ -145,8 +144,8 @@ class _RecordCardState extends State<RecordCard> {
 
   List<Widget> _buildAdditionalInfo() {
     return [
-      Padding(
-        padding: const EdgeInsets.all(10.0),
+      const Padding(
+        padding: EdgeInsets.all(10.0),
         child: Divider(
           height: 1, // Height of the divider
           thickness: 1, // Thickness of the divider
@@ -164,12 +163,12 @@ class _RecordCardState extends State<RecordCard> {
       _buildInfoItem('Category:', widget.record.category),
       _buildInfoItem('Readings:', widget.record.readings),
       _buildInfoItem('Condition:', widget.record.condition),
-      Padding(
-        padding: const EdgeInsets.all(16.0),
+      const Padding(
+        padding: EdgeInsets.all(16.0),
         child: Divider(
-          height: 1, // Height of the divider
-          thickness: 1, // Thickness of the divider
-          color: Colors.white,// Right indent
+          height: 1,
+          thickness: 1,
+          color: Colors.white,
         ),
       ),
       Padding(
@@ -182,29 +181,29 @@ class _RecordCardState extends State<RecordCard> {
                 showDialog(
                   context: context,
                   builder: (context) => AlertDialog(
-                    title: Text('Confirm Deletion'),
-                    content: Text(
+                    title: const Text('Confirm Deletion'),
+                    content: const Text(
                         'Are you sure you want to delete this test record?'),
                     actions: [
                       TextButton(
                         onPressed: () {
                           Navigator.of(context).pop();
                         },
-                        child: Text('Cancel'),
+                        child: const Text('Cancel'),
                       ),
                       TextButton(
                         onPressed: () {
                           _deleteRecord();
                           Navigator.of(context).pop();
                         },
-                        child: Text('Delete'),
+                        child: const Text('Delete'),
                       ),
                     ],
                   ),
                 );
               },
               child: Container(
-                child: Row(
+                child: const Row(
                   children: [
                     Text(
                       "Delete",
@@ -233,7 +232,7 @@ class _RecordCardState extends State<RecordCard> {
                 );
               },
               child: Container(
-                child: Row(
+                child: const Row(
                   children: [
                     Text(
                       "Edit",
@@ -254,64 +253,7 @@ class _RecordCardState extends State<RecordCard> {
           ],
         ),
       ),
-      // Row(
-      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      //   children: [
-      //     Expanded(
-      //       child: Padding(
-      //         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      //         child: TextButton(
-      //           onPressed: () {},
-      //           style: ButtonStyle(
-      //             backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-      //             foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-      //             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-      //               RoundedRectangleBorder(
-      //                 borderRadius: BorderRadius.circular(8.0),
-      //               ),
-      //             ),
-      //           ),
-      //           child: Row(
-      //             mainAxisSize: MainAxisSize.min,
-      //             children: <Widget>[
-      //               Icon(Icons.edit),
-      //               SizedBox(width: 8),
-      //               Text("Edit"),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //     SizedBox(width: 80,),
-      //     Expanded(
-      //       child: Padding(
-      //         padding: const EdgeInsets.symmetric(horizontal: 16.0),
-      //         child: TextButton(
-      //           onPressed: () {},
-      //           style: ButtonStyle(
-      //             backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
-      //             foregroundColor: MaterialStateProperty.all<Color>(Colors.black),
-      //             shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-      //               RoundedRectangleBorder(
-      //                 borderRadius: BorderRadius.circular(8.0),
-      //               ),
-      //             ),
-      //           ),
-      //           child:
-      //           Row(
-      //             mainAxisSize: MainAxisSize.max,
-      //             children: <Widget>[
-      //               Icon(Icons.delete),
-      //               SizedBox(width: 8),
-      //               Text("Delete"),
-      //             ],
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ],
-      // ),
-      SizedBox(
+      const SizedBox(
         height: 10,
       ),
     ];
@@ -328,17 +270,17 @@ class _RecordCardState extends State<RecordCard> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.white,
               fontSize: 15,
             ),
           ),
-          SizedBox(width: 8),
+          const SizedBox(width: 8),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(color: Colors.white, fontSize: 15,),
+              style: const TextStyle(color: Colors.white, fontSize: 15,),
             ),
           ),
         ],

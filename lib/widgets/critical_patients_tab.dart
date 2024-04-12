@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:mapd722_mobile_web_development/providers/patients_provider.dart';
-import 'package:mapd722_mobile_web_development/widgets/patient_card.dart';
 import 'package:mapd722_mobile_web_development/widgets/white_bg_text_field.dart';
 import 'package:provider/provider.dart';
 
 import 'critical_patient_card.dart';
 
 class CriticalPatientsTab extends StatelessWidget {
-  TextEditingController _searchController = TextEditingController();
+  final TextEditingController _searchController = TextEditingController();
+
+  CriticalPatientsTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +25,9 @@ class CriticalPatientsTab extends StatelessWidget {
                     .searchCriticalPatients(value); // Change here to use searchCriticalPatients
               },
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             if (provider.isLoading)
-              Expanded(
+              const Expanded(
                 child: Center(
                   child: CircularProgressIndicator(color: Colors.blue,),
                 ),
@@ -38,7 +39,7 @@ class CriticalPatientsTab extends StatelessWidget {
                 ),
               )
             else if (provider.filteredCriticalList.isEmpty)
-                Expanded(
+                const Expanded(
                   child: Center(
                     child: Text('No critical patients found.'),
                   ),

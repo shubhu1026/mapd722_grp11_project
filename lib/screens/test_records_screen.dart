@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mapd722_mobile_web_development/providers/patient_details_provider.dart';
 import 'package:mapd722_mobile_web_development/screens/add_test_record.dart';
-import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 import 'package:mapd722_mobile_web_development/widgets/patient_records.dart';
 import 'package:provider/provider.dart';
 
@@ -30,21 +29,21 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete all records?'),
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete all records?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 _deleteAllRecords();
                 Navigator.pop(context); // Close the dialog
               },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -63,7 +62,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
       );
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Test record deleted successfully'),
           ),
         );
@@ -79,14 +78,12 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
     } catch (error) {
       print('Error deleting test record: $error');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text('Failed to delete test record'),
         ),
       );
     }
   }
-
-  TextEditingController _searchController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -111,11 +108,10 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  Provider.of<PatientDetailsProvider>(context, listen: false)
+                  "${Provider.of<PatientDetailsProvider>(context, listen: false)
                           .patient
-                          .firstName +
-                      "'s Test Records",
-                  style: TextStyle(
+                          .firstName}'s Test Records",
+                  style: const TextStyle(
                       color: Constants.primaryColor,
                       fontSize: 20,
                       fontWeight: FontWeight.w600),
@@ -137,35 +133,35 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
                     Container(
                       width: 20,
                       height: 20,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           shape: BoxShape.circle,
                           color: Constants.primaryColor),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 2,
                     ),
-                    Text(
+                    const Text(
                       "Normal",
                       style: TextStyle(
                           color: Constants.primaryColor,
                           fontSize: 16,
                           fontWeight: FontWeight.w600),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 10,
                     ),
                     Container(
                       width: 20,
                       height: 20,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.red,
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 2,
                     ),
-                    Text(
+                    const Text(
                       "Critical",
                       style: TextStyle(
                           color: Colors.red,
@@ -179,7 +175,7 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
                     _showDeleteAllDialogBox(context);
                   },
                   child: Container(
-                    child: Row(
+                    child: const Row(
                       children: [
                         Icon(
                           Icons.delete,
@@ -199,10 +195,10 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
               ],
             ),
           ),
-          SizedBox(height: 10,),
+          const SizedBox(height: 10,),
           Expanded(
             child: Container(
-              color: Color.fromARGB(255, 255, 255, 255),
+              color: const Color.fromARGB(255, 255, 255, 255),
               child: RecordsTab(patientID: widget.patientID),
             ),
           ),
@@ -238,8 +234,8 @@ class _TestRecordsScreenState extends State<TestRecordsScreen> {
                       },
                       tooltip: 'Add Test Record',
                       splashRadius: 24,
-                      padding: EdgeInsets.all(8),
-                      icon: Row(
+                      padding: const EdgeInsets.all(8),
+                      icon: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(

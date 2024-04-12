@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mapd722_mobile_web_development/models/patient.dart';
 import 'package:mapd722_mobile_web_development/screens/patient_details_screen.dart';
-import '../constants/constants.dart';
 import '../util.dart';
 
 class CriticalPatientCard extends StatefulWidget {
@@ -34,7 +33,7 @@ class _CriticalPatientCardState extends State<CriticalPatientCard> {
       },
       child: Card(
         color: Colors.red,
-        margin: EdgeInsets.symmetric(vertical: 8.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
           children: [
             ListTile(
@@ -44,7 +43,7 @@ class _CriticalPatientCardState extends State<CriticalPatientCard> {
               ),
               title: Text(
                 '${widget.patient.firstName} ${widget.patient.lastName}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 17,
                   color: Colors.white,
@@ -52,14 +51,14 @@ class _CriticalPatientCardState extends State<CriticalPatientCard> {
               ),
               subtitle: Row(
                 children: [
-                  Text(
+                  const Text(
                     'Date of Birth: ',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w500),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 3,
                   ),
                   Text(
@@ -67,7 +66,7 @@ class _CriticalPatientCardState extends State<CriticalPatientCard> {
                             DateTime.tryParse(widget.patient.dateOfBirth ?? ''),
                             DateFormat('dd MMM, yyyy')) ??
                         '',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 15,
                     ),
@@ -85,7 +84,7 @@ class _CriticalPatientCardState extends State<CriticalPatientCard> {
                 },
               ),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             if (_expanded) ..._buildAdditionalInfo(),
           ],
         ),
@@ -100,7 +99,7 @@ class _CriticalPatientCardState extends State<CriticalPatientCard> {
       _buildInfoItem('Phone:', widget.patient.contactNumber),
       _buildInfoItem(
           'Records:', (widget.patient.recordHistory?.length ?? 0).toString()),
-      SizedBox(
+      const SizedBox(
         height: 10,
       ),
     ];
@@ -114,17 +113,17 @@ class _CriticalPatientCardState extends State<CriticalPatientCard> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.white,
               fontSize: 15,
             ),
           ),
-          SizedBox(width: 6),
+          const SizedBox(width: 6),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(color: Colors.white, fontSize: 15),
+              style: const TextStyle(color: Colors.white, fontSize: 15),
             ),
           ),
         ],

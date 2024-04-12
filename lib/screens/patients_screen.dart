@@ -8,6 +8,8 @@ import '../widgets/custom_drawer.dart';
 import '../constants/constants.dart'; // Importing the Constants class
 
 class PatientsScreen extends StatefulWidget {
+  const PatientsScreen({super.key});
+
   @override
   _PatientsScreenState createState() => _PatientsScreenState();
 }

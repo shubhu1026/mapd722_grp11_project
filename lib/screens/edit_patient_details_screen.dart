@@ -18,7 +18,7 @@ import '../util.dart';
 class EditPatientDetailsScreen extends StatefulWidget {
   final Patient? patient;
 
-  const EditPatientDetailsScreen({Key? key, this.patient}) : super(key: key);
+  const EditPatientDetailsScreen({super.key, this.patient});
 
   @override
   _EditPatientDetailsScreenState createState() => _EditPatientDetailsScreenState();
@@ -32,13 +32,13 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
 
   Gender? _selectedGender;
 
-  TextEditingController _firstNameController = TextEditingController();
-  TextEditingController _lastNameController = TextEditingController();
-  TextEditingController _addressController = TextEditingController();
-  TextEditingController _dobController = TextEditingController();
-  TextEditingController _doctorController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _firstNameController = TextEditingController();
+  final TextEditingController _lastNameController = TextEditingController();
+  final TextEditingController _addressController = TextEditingController();
+  final TextEditingController _dobController = TextEditingController();
+  final TextEditingController _doctorController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
 
   @override
   void initState() {
@@ -84,30 +84,30 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
           key: _formKey,
           child: ListView(
             children: [
-              Text(
+              const Text(
                 'Patient Details',
                 style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               CustomTextField(
                 labelText: 'First Name',
                 controller: _firstNameController,
                 prefixIcon: Icons.person,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Last Name',
                 controller: _lastNameController,
                 prefixIcon: Icons.person,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Address',
                 controller: _addressController,
                 prefixIcon: Icons.home_work,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Date of Birth',
                 controller: _dobController,
@@ -115,19 +115,19 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                 onTap: () => _selectDate(context),
                 readOnly: true,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Doctor\'s Name',
                 controller: _doctorController,
                 prefixIcon: Icons.medical_information,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Email',
                 controller: _emailController,
                 prefixIcon: Icons.email,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(20.0),
@@ -137,8 +137,8 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                   padding: const EdgeInsets.all(8.0),
                   child: Row(
                     children: [
-                      Padding(
-                        padding: const EdgeInsets.only(right: 8.0),
+                      const Padding(
+                        padding: EdgeInsets.only(right: 8.0),
                         child: Icon(
                           Icons.person,
                           color: Constants.primaryColor,
@@ -151,43 +151,36 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                         groupValue: _selectedGender,
                         onChanged: (Gender? value) {
                           setState(() {
-                            _selectedGender = value as Gender?;
+                            _selectedGender = value;
                           });
                         },
                         activeColor: Constants.primaryColor,
                       ),
-                      Text('Male'),
+                      const Text('Male'),
                       Radio(
                         value: Gender.Female,
                         groupValue: _selectedGender,
                         onChanged: (Gender? value) {
                           setState(() {
-                            _selectedGender = value as Gender?;
+                            _selectedGender = value;
                           });
                         },
                         activeColor: Constants.primaryColor,
                       ),
-                      Text('Female'),
+                      const Text('Female'),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 labelText: 'Phone No.',
                 controller: _phoneController,
                 prefixIcon: Icons.phone,
               ),
-              SizedBox(height: 30),
+              const SizedBox(height: 30),
               ElevatedButton(
                 onPressed: _submitForm,
-                child: Padding(
-                  padding: const EdgeInsets.all(15.0),
-                  child: Text(
-                    'Save Changes'.toUpperCase(),
-                    style: TextStyle(color: Colors.white, fontSize: 18),
-                  ),
-                ),
                 style: ButtonStyle(
                   backgroundColor:
                   MaterialStateProperty.all<Color>(Constants.primaryColor),
@@ -195,6 +188,13 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(20.0),
                     ),
+                  ),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(15.0),
+                  child: Text(
+                    'Save Changes'.toUpperCase(),
+                    style: const TextStyle(color: Colors.white, fontSize: 18),
                   ),
                 ),
               ),
@@ -252,7 +252,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
         Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
 
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
+          const SnackBar(
             content: Text('Patient details updated successfully'),
           ),
         );
@@ -277,7 +277,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
           Provider.of<PatientsProvider>(context, listen: false).updatePatientLists();
 
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
+            const SnackBar(
               content: Text('Patient details updated successfully'),
             ),
           );

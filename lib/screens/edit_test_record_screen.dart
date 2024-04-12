@@ -17,10 +17,10 @@ class EditPatientRecordScreen extends StatefulWidget {
   final String? patientId;
 
   const EditPatientRecordScreen({
-    Key? key,
+    super.key,
     required this.record,
     required this.patientId,
-  }) : super(key: key);
+  });
 
   @override
   _EditPatientRecordScreenState createState() => _EditPatientRecordScreenState();
@@ -30,14 +30,14 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
   final _formKey = GlobalKey<FormState>();
   late Record _updatedRecord;
 
-  TextEditingController _testTypeController = TextEditingController();
-  TextEditingController _diagnosisController = TextEditingController();
-  TextEditingController _nurseController = TextEditingController();
-  TextEditingController _testDateController = TextEditingController();
-  TextEditingController _testTimeController = TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
-  TextEditingController _conditionController = TextEditingController();
-  TextEditingController _readingsController = TextEditingController();
+  final TextEditingController _testTypeController = TextEditingController();
+  final TextEditingController _diagnosisController = TextEditingController();
+  final TextEditingController _nurseController = TextEditingController();
+  final TextEditingController _testDateController = TextEditingController();
+  final TextEditingController _testTimeController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _conditionController = TextEditingController();
+  final TextEditingController _readingsController = TextEditingController();
 
   @override
   void initState() {
@@ -83,12 +83,12 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
+                const Text(
                   'Test Details',
                   style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
                   textAlign: TextAlign.center,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CustomTextField(
                   labelText: 'Test Type',
                   prefixIcon: Icons.list,
@@ -99,7 +99,7 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                     });
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CustomTextField(
                   labelText: 'Diagnosis',
                   prefixIcon: Icons.health_and_safety,
@@ -110,7 +110,7 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                     });
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CustomTextField(
                   labelText: 'Nurse',
                   prefixIcon: Icons.woman_rounded,
@@ -121,7 +121,7 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                     });
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CustomTextField(
                   labelText: 'Test Date',
                   prefixIcon: Icons.calendar_today,
@@ -131,7 +131,7 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                   },
                   readOnly: true,
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CustomTextField(
                   labelText: 'Test Time',
                   prefixIcon: Icons.access_time,
@@ -141,7 +141,7 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                     _selectTime(context);
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CustomTextField(
                   labelText: 'Category',
                   prefixIcon: Icons.medical_information,
@@ -152,7 +152,7 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                     });
                   },
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 CustomTextField(
                   labelText: 'Readings',
                   prefixIcon: Icons.numbers,
@@ -164,7 +164,7 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                     });
                   },
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 CustomTextField(
                   labelText: 'Condition',
                   prefixIcon: Icons.medical_services,
@@ -176,22 +176,22 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                     });
                   },
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 ElevatedButton(
                   onPressed: _submitForm,
-                  child: Padding(
-                    padding: const EdgeInsets.all(15.0),
-                    child: Text(
-                      'Save Test'.toUpperCase(),
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all<Color>(Constants.primaryColor),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                       RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(20.0),
                       ),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Text(
+                      'Save Test'.toUpperCase(),
+                      style: const TextStyle(color: Colors.white, fontSize: 18),
                     ),
                   ),
                 ),

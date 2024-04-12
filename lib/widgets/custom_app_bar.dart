@@ -6,7 +6,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final Function? onBack;
   final Function? onMenu;
 
-  CustomAppBar({
+  const CustomAppBar({
+    super.key,
     required this.title,
     this.onBack,
     this.onMenu,
@@ -14,6 +15,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => const Size.fromHeight(70.0);
+
   @override
   Widget build(BuildContext context) {
     return PreferredSize(
@@ -32,7 +34,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         actions: [
           if (onMenu != null)
             IconButton(
-              icon: Icon(Icons.menu_rounded),
+              icon: const Icon(Icons.menu_rounded),
               onPressed: () {
                 if (onMenu != null) {
                   onMenu!();
@@ -42,9 +44,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               },
             ),
         ],
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios_new),
+          icon: const Icon(Icons.arrow_back_ios_new),
           onPressed: () {
             if (onBack != null) {
               onBack!();

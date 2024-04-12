@@ -17,7 +17,7 @@ import '../models/patient.dart';
 class PatientDetailsScreen extends StatefulWidget {
   final String? patientId;
 
-  const PatientDetailsScreen({Key? key, this.patientId}) : super(key: key);
+  const PatientDetailsScreen({super.key, this.patientId});
 
   @override
   _PatientDetailsScreenState createState() => _PatientDetailsScreenState();
@@ -69,8 +69,8 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
           context: context,
           builder: (BuildContext context) {
             return AlertDialog(
-              title: Text('Delete Successful'),
-              content: Text('Patient deleted successfully.'),
+              title: const Text('Delete Successful'),
+              content: const Text('Patient deleted successfully.'),
               actions: [
                 TextButton(
                   onPressed: () {
@@ -80,7 +80,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                       MaterialPageRoute(builder: (context) => PatientsScreen()),
                     );
                   },
-                  child: Text('OK'),
+                  child: const Text('OK'),
                 ),
               ],
             );
@@ -101,20 +101,20 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Confirm Deletion'),
-          content: Text('Are you sure you want to delete this patient?'),
+          title: const Text('Confirm Deletion'),
+          content: const Text('Are you sure you want to delete this patient?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.pop(context); // Close the dialog
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 _deletePatient();
                },
-              child: Text('Delete'),
+              child: const Text('Delete'),
             ),
           ],
         );
@@ -141,7 +141,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
         builder: (context, provider, _) {
           final patient = provider.patient;
           return (provider.isLoading)
-              ? Center(
+              ? const Center(
                   child:
                       CircularProgressIndicator(color: Constants.primaryColor))
               : Container(
@@ -168,14 +168,14 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                     IconButton(
                                       iconSize: 24,
                                       icon:
-                                          Icon(Icons.edit, color: Colors.white),
+                                          const Icon(Icons.edit, color: Colors.white),
                                       onPressed: () {
                                         Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                             builder: (context) =>
                                                 EditPatientDetailsScreen(
-                                              patient: patient!,
+                                              patient: patient,
                                             ),
                                           ),
                                         );
@@ -183,7 +183,7 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                     ),
                                     IconButton(
                                       iconSize: 24,
-                                      icon: Icon(Icons.delete,
+                                      icon: const Icon(Icons.delete,
                                           color: Colors.red),
                                       onPressed: () {
                                         _showDeleteDialogBox();
@@ -196,20 +196,20 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                   child: Image.asset(
                                       'assets/images/patient_icon.png'),
                                 ),
-                                SizedBox(height: 16.0),
+                                const SizedBox(height: 16.0),
                                 Text(
                                   '${patient.firstName} ${patient.lastName}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 20.0,
                                     fontWeight: FontWeight.bold,
                                     color: Colors.white,
                                   ),
                                 ),
-                                SizedBox(height: 8.0),
+                                const SizedBox(height: 8.0),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Address:',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
@@ -217,21 +217,21 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                         fontSize: 16,
                                       ),
                                     ),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     Text(
                                       '${patient.address}',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 2.0),
+                                const SizedBox(height: 2.0),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Date of Birth:',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
@@ -239,25 +239,25 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                         fontSize: 16,
                                       ),
                                     ),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     Text(
                                       Util.getFormattedDate(
                                               DateTime.tryParse(
                                                   patient.dateOfBirth),
                                               DateFormat('dd MMM, yyyy')) ??
                                           '',
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 2.0),
+                                const SizedBox(height: 2.0),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Gender:',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
@@ -265,21 +265,21 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                         fontSize: 16,
                                       ),
                                     ),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     Text(
-                                      '${patient.gender}',
-                                      style: TextStyle(
+                                      patient.gender,
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 2.0),
+                                const SizedBox(height: 2.0),
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Email:',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w500,
@@ -287,17 +287,17 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                         fontSize: 16,
                                       ),
                                     ),
-                                    SizedBox(width: 5),
+                                    const SizedBox(width: 5),
                                     Text(
-                                      '${patient.email}',
-                                      style: TextStyle(
+                                      patient.email,
+                                      style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 16,
                                       ),
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 16.0),
+                                const SizedBox(height: 16.0),
                                 ElevatedButton(
                                   onPressed: () {
                                     Navigator.push(
@@ -309,13 +309,13 @@ class _PatientDetailsScreenState extends State<PatientDetailsScreen> {
                                       ),
                                     );
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'View Test Records',
                                     style: TextStyle(
                                         color: Constants.primaryColor),
                                   ),
                                 ),
-                                SizedBox(height: 6,)
+                                const SizedBox(height: 6,)
                               ],
                             ),
                           ),

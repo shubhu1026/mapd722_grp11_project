@@ -2,13 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mapd722_mobile_web_development/models/patient.dart';
 import 'package:mapd722_mobile_web_development/screens/patient_details_screen.dart';
-import '../constants/constants.dart';
 import '../util.dart';
 
 class PatientCard extends StatefulWidget {
   final Patient patient;
 
-  const PatientCard({required this.patient});
+  const PatientCard({super.key, required this.patient});
 
   @override
   _PatientCardState createState() => _PatientCardState();
@@ -33,7 +32,7 @@ class _PatientCardState extends State<PatientCard> {
         });
       },
       child: Card(
-        margin: EdgeInsets.symmetric(vertical: 8.0),
+        margin: const EdgeInsets.symmetric(vertical: 8.0),
         child: Column(
           children: [
             ListTile(
@@ -43,21 +42,21 @@ class _PatientCardState extends State<PatientCard> {
               ),
               title: Text(
                 '${widget.patient.firstName} ${widget.patient.lastName}',
-                style: TextStyle(
+                style: const TextStyle(
                   fontWeight: FontWeight.w500,
                   fontSize: 17,
                 ),
               ),
               subtitle: Row(
                 children: [
-                  Text(
+                  const Text(
                     'Date of Birth: ',
                     style: TextStyle(
                         color: Colors.black,
                         fontSize: 15,
                         fontWeight: FontWeight.w500),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 3,
                   ),
                   Text(
@@ -65,7 +64,7 @@ class _PatientCardState extends State<PatientCard> {
                         DateTime.tryParse(widget.patient.dateOfBirth ?? ''),
                         DateFormat('dd MMM, yyyy')) ??
                         '',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.black87,
                       fontSize: 15,
                     ),
@@ -83,7 +82,7 @@ class _PatientCardState extends State<PatientCard> {
                 },
               ),
             ),
-            SizedBox(height: 10,),
+            const SizedBox(height: 10,),
             if (_expanded) ..._buildAdditionalInfo(),
           ],
         ),
@@ -98,7 +97,7 @@ class _PatientCardState extends State<PatientCard> {
       _buildInfoItem('Phone:', widget.patient.contactNumber),
       _buildInfoItem(
           'Records:', (widget.patient.recordHistory?.length ?? 0).toString()),
-      SizedBox(
+      const SizedBox(
         height: 10,
       ),
     ];
@@ -112,17 +111,17 @@ class _PatientCardState extends State<PatientCard> {
         children: [
           Text(
             title,
-            style: TextStyle(
+            style: const TextStyle(
               fontWeight: FontWeight.bold,
               color: Colors.black,
               fontSize: 15,
             ),
           ),
-          SizedBox(width: 6),
+          const SizedBox(width: 6),
           Expanded(
             child: Text(
               value,
-              style: TextStyle(color: Colors.black87, fontSize: 15),
+              style: const TextStyle(color: Colors.black87, fontSize: 15),
             ),
           ),
         ],

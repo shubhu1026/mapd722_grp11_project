@@ -8,7 +8,7 @@ import '../screens/add_patient_screen.dart';
 class PatientsTabController extends StatelessWidget {
   final TabController tabController;
 
-  const PatientsTabController({required this.tabController});
+  const PatientsTabController({super.key, required this.tabController});
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +33,7 @@ class PatientsTabController extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   indicatorSize: TabBarIndicatorSize.tab,
-                  tabs: [
+                  tabs: const [
                     Tab(text: 'Critical Patients'),
                     Tab(text: 'All Patients'),
                   ],
@@ -62,10 +62,10 @@ class PatientsTabController extends StatelessWidget {
               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26, // Shadow color
-                  spreadRadius: 5, // Spread radius
-                  blurRadius: 7, // Blur radius
-                  offset: Offset(0, 2), // Offset
+                  color: Colors.black26,
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 2),
                 ),
               ],
             ),
@@ -82,14 +82,14 @@ class PatientsTabController extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AddPatientScreen(),
+                            builder: (context) => const AddPatientScreen(),
                           ),
                         );
                       },
                       tooltip: 'Add Patients',
                       splashRadius: 24,
-                      padding: EdgeInsets.all(8),
-                      icon: Row(
+                      padding: const EdgeInsets.all(8),
+                      icon: const Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Icon(

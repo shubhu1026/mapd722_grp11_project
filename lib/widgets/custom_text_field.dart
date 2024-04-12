@@ -12,7 +12,8 @@ class CustomTextField extends StatelessWidget {
   final void Function(String?)? onSaved;
   final void Function(String)? onChanged; // Added onChanged callback
 
-  CustomTextField({
+  const CustomTextField({
+    super.key,
     required this.labelText,
     required this.prefixIcon,
     required this.controller,
@@ -21,7 +22,7 @@ class CustomTextField extends StatelessWidget {
     this.onTap,
     this.readOnly = false,
     this.onSaved,
-    this.onChanged, // Added onChanged callback to constructor
+    this.onChanged,
   });
 
   @override
@@ -48,7 +49,8 @@ class CustomTextField extends StatelessWidget {
             }
             return null;
           },
-          onChanged: onChanged, // Pass onChanged callback to TextFormField
+          onChanged: onChanged,
+          // Pass onChanged callback to TextFormField
           onSaved: onSaved,
         ),
       ),

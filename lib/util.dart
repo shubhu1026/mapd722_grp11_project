@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:intl/intl.dart';
 
 class Util {
@@ -8,7 +9,9 @@ class Util {
     try {
       formatted = formatter.format(dateTime);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return formatted;
   }
@@ -20,7 +23,9 @@ class Util {
     try {
       formattedTime = formatter.format(dateTime);
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
     return formattedTime;
   }
