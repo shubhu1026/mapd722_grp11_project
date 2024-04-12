@@ -267,6 +267,22 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
 
   Future<void> _updateRecord() async {
     try {
+      final date = DateTime.parse(_updatedRecord.date);
+      final time = DateTime.parse(_updatedRecord.testTime);
+
+      final dateTime = DateTime(
+        date.year,
+        date.month,
+        date.day,
+        time.hour,
+        time.minute,
+      );
+
+      print(DateFormat('yyyy-MM-dd HH:mm').format(dateTime));
+
+      _updatedRecord.date = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+      _updatedRecord.testTime = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+
       final response = await http.put(
         Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientId}/medicalTests/${widget.record.id}'), // Replace with your API endpoint
         headers: <String, String>{
