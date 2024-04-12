@@ -9,6 +9,7 @@ import 'package:mapd722_mobile_web_development/widgets/custom_text_field.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/patient_records_provider.dart';
+import '../widgets/custom_drop_down_field.dart';
 
 class AddPatientRecordScreen extends StatefulWidget {
   final String? patientID;
@@ -106,38 +107,14 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 10),
-                        Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20.0),
-                            border: Border.all(color: Colors.black, width: 0.65),
-                          ),
-                          child: DropdownButtonFormField<String>(
-                            value: _selectedTestType,
-                            onChanged: (newValue) {
-                              setState(() {
-                                _selectedTestType = newValue!;
-                              });
-                            },
-                            items: _testTypes.map((String testType) {
-                              return DropdownMenuItem<String>(
-                                value: testType,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12.0),
-                                  child: Text(
-                                    testType,
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            decoration: const InputDecoration(
-                              border: InputBorder.none,
-                              labelText: 'Test Type',
-                              prefixIcon: Icon(Icons.list, color: Constants.primaryColor),
-                            ),
-                            style: const TextStyle(color: Colors.black),
-                          ),
+                        CustomDropdownFormField(
+                          items: _testTypes,
+                          value: _selectedTestType,
+                          onChanged: (newValue) {
+                            setState(() {
+                              _selectedTestType = newValue;
+                            });
+                          },
                         ),
                         const SizedBox(height: 10),
                         CustomTextField(

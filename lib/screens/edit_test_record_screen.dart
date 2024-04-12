@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../constants/constants.dart';
 import '../providers/patients_provider.dart';
 import '../util.dart';
+import '../widgets/custom_drop_down_field.dart';
 
 class EditPatientRecordScreen extends StatefulWidget {
   final Record record;
@@ -114,39 +115,14 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20.0),
-                    border: Border.all(color: Colors.black),
-                  ),
-                  child: DropdownButtonFormField<String>(
-                    value: _selectedTestType,
-                    onChanged: (newValue) {
-                      setState(() {
-                        _selectedTestType = newValue!;
-                        _updatedRecord.testType= _selectedTestType;
-                      });
-                    },
-                    items: _testTypes.map((String testType) {
-                      return DropdownMenuItem<String>(
-                        value: testType,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12.0),
-                          child: Text(
-                            testType,
-                            style: const TextStyle(color: Colors.black),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                      labelText: 'Test Type',
-                      prefixIcon: Icon(Icons.list, color: Constants.primaryColor),
-                    ),
-                    style: const TextStyle(color: Colors.black),
-                  ),
+                CustomDropdownFormField(
+                  items: _testTypes,
+                  value: _selectedTestType,
+                  onChanged: (newValue) {
+                    setState(() {
+                      _selectedTestType = newValue;
+                    });
+                  },
                 ),
                 const SizedBox(height: 10),
                 CustomTextField(
