@@ -199,7 +199,7 @@ class _AddPatientRecordsScreenState extends State<AddPatientRecordScreen> {
                         ),
                       ],
                     ),
-                    SizedBox(height: 20,),
+                    const SizedBox(height: 20,),
                     ElevatedButton(
                       onPressed: _submitForm,
                       style: ButtonStyle(
