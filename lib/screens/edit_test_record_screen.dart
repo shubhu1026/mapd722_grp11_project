@@ -348,6 +348,8 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
 
       _updatedRecord.date = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
       _updatedRecord.testTime = DateFormat('yyyy-MM-dd HH:mm').format(dateTime);
+      _updatedRecord.readings = _readingsController.text;
+      _updatedRecord.condition = _conditionController.text;
 
       final response = await http.put(
         Uri.parse('https://medicare-rest-api.onrender.com/patients/${widget.patientId}/medicalTests/${widget.record.id}'), // Replace with your API endpoint
