@@ -47,8 +47,6 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     'Complete Blood Count (CBC)',
   ];
 
-  String _selectedTestType = '';
-
   @override
   void initState() {
     super.initState();
@@ -57,7 +55,6 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     _diagnosisController.text = widget.record.diagnosis;
     _nurseController.text = widget.record.nurse;
 
-    _selectedTestType = widget.record.testType;
 
     DateTime? parsedDate = DateTime.tryParse(widget.record.date ?? '');
     String formattedDate = Util.getFormattedDate(parsedDate, DateFormat('yyyy-MM-dd')) ?? '';
@@ -115,14 +112,11 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 10),
-                CustomDropdownFormField(
-                  items: _testTypes,
-                  value: _selectedTestType,
-                  onChanged: (newValue) {
-                    setState(() {
-                      _selectedTestType = newValue;
-                    });
-                  },
+                CustomTextField(
+                  labelText: 'Test Type',
+                  prefixIcon: Icons.medical_services,
+                  controller: _testTypeController,
+                  readOnly: true,
                 ),
                 const SizedBox(height: 10),
                 CustomTextField(
@@ -280,8 +274,8 @@ class _EditPatientRecordScreenState extends State<EditPatientRecordScreen> {
     }
   }
   void _updateCondition(String value) {
-    if (value.isNotEmpty && _selectedTestType.isNotEmpty) {
-      final thresholds = _conditionThresholds[_selectedTestType];
+    if (value.isNotEmpty && widget.record.testType.isNotEmpty) {
+      final thresholds = _conditionThresholds[widget.record.testType];
       if (thresholds != null) {
         final double reading = double.tryParse(value) ?? 0.0;
         if (reading >= (thresholds['low'] ?? double.negativeInfinity) &&

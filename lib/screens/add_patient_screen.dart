@@ -186,6 +186,7 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
                         labelText: 'Phone No.',
                         prefixIcon: Icons.phone,
                         controller: _phoneController,
+                        keyboardType: TextInputType.number,
                         onSaved: (value) => _patient.contactNumber = value!,
                       ),
                     ],
@@ -235,6 +236,15 @@ class _AddPatientScreenState extends State<AddPatientScreen> {
 
   void _submitForm() async {
     if (_formKey.currentState!.validate()) {
+      if (_selectedGender == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select gender'),
+          ),
+        );
+        return;
+      }
+
       _formKey.currentState!.save();
 
       try {

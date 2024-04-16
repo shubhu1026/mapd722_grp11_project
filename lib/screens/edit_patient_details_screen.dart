@@ -177,6 +177,7 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
                 labelText: 'Phone No.',
                 controller: _phoneController,
                 prefixIcon: Icons.phone,
+                keyboardType: TextInputType.number,
               ),
               const SizedBox(height: 30),
               ElevatedButton(
@@ -222,6 +223,15 @@ class _EditPatientDetailsScreenState extends State<EditPatientDetailsScreen> {
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
+      if (_selectedGender == null) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please select gender'),
+          ),
+        );
+        return;
+      }
+
       // Update patient object with new values
       widget.patient!.firstName = _firstNameController.text;
       widget.patient!.lastName = _lastNameController.text;

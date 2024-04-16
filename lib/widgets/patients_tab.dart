@@ -65,7 +65,7 @@ class PatientsTab extends StatelessWidget {
           builder: (BuildContext context) {
             return AlertDialog(
               title: const Text('Delete Successful'),
-              content: const Text('Patient deleted successfully.'),
+              content: const Text('Patients deleted successfully.'),
               actions: [
                 TextButton(
                   onPressed: () {
